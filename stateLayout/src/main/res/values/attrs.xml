@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="StateLayout_Layout">
+        <!-- retain content, not affected by StateLayout -->
+        <attr name="layout_showStrategy" format="enum">
+            <enum name="contentState" value="0" />
+            <enum name="otherState" value="1" />
+            <enum name="always" value="2" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="StateLayout">
+        <attr name="beginIsContent" format="boolean" />
+    </declare-styleable>
+</resources>
