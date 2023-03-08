@@ -1,7 +1,10 @@
 package com.chooongg.widget.stateLayout
 
 import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.AttributeSet
+import android.view.AbsSavedState
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -20,7 +23,7 @@ open class StateLayout @JvmOverloads constructor(
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0,
     beginIsContent: Boolean = false,
-    enableAnimation: Boolean = StateLayoutManager.enableAnimation
+    enableAnimation: Boolean = StateLayoutManager.isEnableAnimation
 ) : FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
 
     /**
@@ -71,10 +74,6 @@ open class StateLayout @JvmOverloads constructor(
      */
     fun showContent() = show(ContentState::class)
 
-//    fun <T : AbstractState> show(params: Any? = null) {
-//
-//    }
-
     fun show(stateClass: KClass<out AbstractState>, params: Any? = null) {
         if (stateClass == currentState) {
             existingOtherState[stateClass]?.also { it.onChangeParams(it.targetView, params) }
@@ -82,11 +81,10 @@ open class StateLayout @JvmOverloads constructor(
         }
         post {
             hideAllOtherState()
-            if (stateClass == ContentState::class) {
-                showContentViews()
-            } else {
-                createOrShowState(stateClass, params)
-            }
+            if (stateClass == ContentState::class) showContentViews()
+            else createOrShowState(stateClass, params)
+            currentState = stateClass
+            onStatedChangeListener?.onStatedChange(stateClass)
         }
     }
 
@@ -97,6 +95,7 @@ open class StateLayout @JvmOverloads constructor(
                 when (params.showStrategy) {
                     LayoutParams.CONTENT_STATE -> {
                         if (canUseAnimation()) {
+                            if (it.visibility != View.VISIBLE) animate.createAnimate(it)
                             animate.showAnimate(it) { it.visibility = View.VISIBLE }
                         } else it.visibility = View.VISIBLE
                     }
@@ -117,12 +116,13 @@ open class StateLayout @JvmOverloads constructor(
                 when (params.showStrategy) {
                     LayoutParams.CONTENT_STATE -> {
                         if (canUseAnimation()) {
-                            animate.showAnimate(it) { it.visibility = View.INVISIBLE }
+                            animate.hideAnimate(it) { it.visibility = View.INVISIBLE }
                         } else it.visibility = View.INVISIBLE
                     }
                     LayoutParams.OTHER_STATE -> {
                         if (canUseAnimation()) {
-                            animate.hideAnimate(it) { it.visibility = View.VISIBLE }
+                            if (it.visibility != View.VISIBLE) animate.createAnimate(it)
+                            animate.showAnimate(it) { it.visibility = View.VISIBLE }
                         } else it.visibility = View.VISIBLE
                     }
                 }
@@ -136,24 +136,30 @@ open class StateLayout @JvmOverloads constructor(
         if (temp == null) createState(state, params) else showState(state, params)
         if (state.isMeanwhileContent) showContentViews() else hideContentViews()
         existingOtherState[stateClass] = state
-        currentState = stateClass
-        onStatedChangeListener?.onStatedChange(stateClass)
     }
 
     private fun createState(state: AbstractState, params: Any?) {
-        if (state.targetView.parent == null) addView(state.targetView)
-        state.onAttach(this, params)
+        state.obtainTargetView(context)
+        if (state.targetView.parent == null) {
+            val lp = state.generateLayoutParams().apply { isStateChildView = true }
+            addView(state.targetView, lp)
+        }
+        state.onAttach(state.targetView, params)
         if (canUseAnimation(state)) {
+            animate.createAnimate(state.targetView)
             animate.showAnimate(state.targetView) { state.targetView.visibility = View.VISIBLE }
         } else state.targetView.visibility = View.VISIBLE
     }
 
     private fun showState(state: AbstractState, params: Any?) {
-        if (state.targetView.parent == null) addView(state.targetView)
+        if (state.targetView.parent == null) {
+            val lp = state.generateLayoutParams().apply { isStateChildView = true }
+            addView(state.targetView, lp)
+        }
+        state.onChangeParams(state.targetView, params)
         if (canUseAnimation(state)) {
             animate.showAnimate(state.targetView) { state.targetView.visibility = View.VISIBLE }
         } else state.targetView.visibility = View.VISIBLE
-        state.onChangeParams(state.targetView, params)
     }
 
     private fun hideAllOtherState() {
@@ -211,10 +217,31 @@ open class StateLayout @JvmOverloads constructor(
         onStatedChangeListener = listener
     }
 
-    /** @hide */
     protected open fun onSetLayoutParams(child: View?, layoutParams: ViewGroup.LayoutParams?) {
         checkChildViewUpdateIsNeedRequestLayout(child, layoutParams)
         requestLayout()
+    }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        val state = SavedState(super.onSaveInstanceState())
+        state.currentStateClassName = currentState.java.name
+        return state
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        if (state !is SavedState) {
+            super.onRestoreInstanceState(state)
+            return
+        }
+        super.onRestoreInstanceState(state.superState)
+        if (state.currentStateClassName != null) {
+            val clazz = Class.forName(state.currentStateClassName!!)
+            val temp = isEnableAnimation
+            isEnableAnimation = false
+            show(clazz.kotlin as KClass<out AbstractState>)
+            isEnableAnimation = temp
+        }
     }
 
     override fun generateDefaultLayoutParams() =
@@ -229,12 +256,6 @@ open class StateLayout @JvmOverloads constructor(
             is MarginLayoutParams -> LayoutParams(lp)
             else -> LayoutParams(lp)
         }
-
-    override fun addView(child: View?, index: Int, params: ViewGroup.LayoutParams?) {
-        val lp = params ?: generateDefaultLayoutParams()
-        checkChildViewUpdateIsNeedRequestLayout(child, lp)
-        super.addView(child, index, lp)
-    }
 
     /**
      * 检查子View是否需要更新布局
@@ -304,6 +325,36 @@ open class StateLayout @JvmOverloads constructor(
             const val CONTENT_STATE = 0
             const val OTHER_STATE = 1
             const val ALWAYS = 2
+        }
+    }
+
+    class SavedState : AbsSavedState {
+
+        var currentStateClassName: String? = null
+
+        constructor(superState: Parcelable?) : super(superState)
+        constructor(source: Parcel) : this(source, null)
+        constructor(source: Parcel, loader: ClassLoader?) : super(source, loader) {
+            currentStateClassName = source.readString()
+        }
+
+        override fun writeToParcel(dest: Parcel, flags: Int) {
+            super.writeToParcel(dest, flags)
+            dest.writeString(currentStateClassName)
+        }
+
+        companion object CREATOR : Parcelable.ClassLoaderCreator<SavedState> {
+            override fun createFromParcel(source: Parcel, loader: ClassLoader?): SavedState {
+                return SavedState(source, loader)
+            }
+
+            override fun createFromParcel(parcel: Parcel): SavedState {
+                return SavedState(parcel)
+            }
+
+            override fun newArray(size: Int): Array<SavedState?> {
+                return arrayOfNulls(size)
+            }
         }
     }
 }

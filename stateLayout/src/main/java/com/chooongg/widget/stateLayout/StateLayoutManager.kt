@@ -19,7 +19,7 @@ object StateLayoutManager {
     /**
      * 是否开启动画
      */
-    var enableAnimation: Boolean = true
+    var isEnableAnimation: Boolean = true
 
     /**
      * 动画
