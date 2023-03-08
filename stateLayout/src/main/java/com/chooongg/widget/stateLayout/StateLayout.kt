@@ -69,6 +69,10 @@ open class StateLayout @JvmOverloads constructor(
         isEnableAnimation = enableAnimation
     }
 
+    override fun onWindowVisibilityChanged(visibility: Int) {
+        super.onWindowVisibilityChanged(visibility)
+    }
+
     /**
      * 显示内容
      */

@@ -1,9 +1,11 @@
 package com.chooongg.widget.stateLayout
 
+import android.app.Activity
+import android.view.View
+import androidx.fragment.app.Fragment
 import com.chooongg.widget.stateLayout.animate.FadeStateAnimate
 import com.chooongg.widget.stateLayout.animate.StateAnimate
 import com.chooongg.widget.stateLayout.state.AbstractState
-import com.chooongg.widget.stateLayout.state.ContentState
 import kotlin.reflect.KClass
 
 /**
@@ -25,4 +27,16 @@ object StateLayoutManager {
      * 动画
      */
     var animate: StateAnimate = FadeStateAnimate()
+
+    fun attachStateLayout(activity: Activity) {
+
+    }
+
+    fun attachStateLayout(fragment: Fragment) {
+
+    }
+
+    fun attachStateLayout(view: View) {
+
+    }
 }
