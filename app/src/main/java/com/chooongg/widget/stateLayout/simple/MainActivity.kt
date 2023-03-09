@@ -5,8 +5,11 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.chooongg.widget.stateLayout.OnStatedChangeListener
+import com.chooongg.widget.stateLayout.StateLayout
+import com.chooongg.widget.stateLayout.StateLayoutManager
 import com.chooongg.widget.stateLayout.show
 import com.chooongg.widget.stateLayout.simple.databinding.ActivityMainBinding
 import com.chooongg.widget.stateLayout.simple.state.LinearProgressState
@@ -23,6 +26,7 @@ class MainActivity : AppCompatActivity(), OnStatedChangeListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         binding.stateLayout.setOnStatedChangeListener(this)

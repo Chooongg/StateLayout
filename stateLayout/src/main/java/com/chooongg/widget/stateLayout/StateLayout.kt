@@ -219,11 +219,14 @@ open class StateLayout @JvmOverloads constructor(
         }
         super.onRestoreInstanceState(state.superState)
         if (state.currentStateClassName != null) {
+            val temp = onStatedChangeListener
+            onStatedChangeListener = null
             showInternal(
                 Class.forName(state.currentStateClassName!!).kotlin as KClass<out AbstractState>,
                 null,
                 false
             )
+            onStatedChangeListener = temp
         }
     }
 

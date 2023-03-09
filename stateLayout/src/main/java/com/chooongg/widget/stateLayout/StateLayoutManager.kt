@@ -34,9 +34,13 @@ object StateLayoutManager {
     /**
      * 附加状态布局到Activity
      */
-    fun attachStateLayout(activity: Activity): StateLayout {
+    fun attachStateLayout(
+        activity: Activity,
+        beginIsContent: Boolean = false,
+        enableAnimation: Boolean = StateLayoutManager.isEnableAnimation
+    ): StateLayout {
         val contentView = activity.findViewById<FrameLayout>(android.R.id.content)
-        val stateLayout = StateLayout(activity)
+        val stateLayout = StateLayout(activity, null, 0, 0, beginIsContent, enableAnimation)
         if (contentView.childCount > 0) {
             val childView = contentView.getChildAt(0)
             val lp = childView.layoutParams
@@ -60,8 +64,12 @@ object StateLayoutManager {
     /**
      * 附加状态布局到View
      */
-    fun attachStateLayout(view: View): StateLayout {
-        val stateLayout = StateLayout(view.context)
+    fun attachStateLayout(
+        view: View,
+        beginIsContent: Boolean = false,
+        enableAnimation: Boolean = StateLayoutManager.isEnableAnimation
+    ): StateLayout {
+        val stateLayout = StateLayout(view.context, null, 0, 0, beginIsContent, enableAnimation)
         if (view.parent != null) {
             val parent = view.parent as ViewGroup
             var childIndex = 0
