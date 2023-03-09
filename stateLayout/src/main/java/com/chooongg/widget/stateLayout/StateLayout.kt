@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.IntDef
 import androidx.core.view.children
-import androidx.core.view.contains
+import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import com.chooongg.widget.stateLayout.animate.StateAnimate
 import com.chooongg.widget.stateLayout.state.AbstractState
@@ -33,14 +33,9 @@ open class StateLayout @JvmOverloads constructor(
         private set
 
     /**
-     * 存在的非Content状态
-     */
-    private val existingOtherState = HashMap<KClass<out AbstractState>, AbstractState>()
-
-    /**
      * 是否启用动画
      */
-    var isEnableAnimation: Boolean = false
+    var isEnableAnimate: Boolean = enableAnimation
 
     /**
      * 动画实现类
@@ -62,141 +57,125 @@ open class StateLayout @JvmOverloads constructor(
             attrs, R.styleable.StateLayout, defStyleAttr, defStyleRes
         )
         val isContent = a.getBoolean(R.styleable.StateLayout_beginIsContent, beginIsContent)
-        a.recycle()
         if (!isInEditMode && !isContent && StateLayoutManager.beginState != ContentState::class) {
-            show(StateLayoutManager.beginState)
+            showInternal(StateLayoutManager.beginState, null, false)
         }
-        isEnableAnimation = enableAnimation
-    }
-
-    override fun onWindowVisibilityChanged(visibility: Int) {
-        super.onWindowVisibilityChanged(visibility)
+        a.recycle()
     }
 
     /**
-     * 显示内容
+     * show content state
      */
     fun showContent() = show(ContentState::class)
 
+    /**
+     * show state
+     */
     fun show(stateClass: KClass<out AbstractState>, params: Any? = null) {
+        post { showInternal(stateClass, params, isEnableAnimate) }
+    }
+
+    /**
+     * show status internal implementation
+     */
+    private fun showInternal(
+        stateClass: KClass<out AbstractState>, params: Any? = null, isAnimate: Boolean
+    ) {
         if (stateClass == currentState) {
-            existingOtherState[stateClass]?.also { it.onChangeParams(it.targetView, params) }
+            forEach { if (it::class == stateClass) (it as AbstractState).onChangeParams(params) }
             return
         }
-        post {
-            hideAllOtherState()
-            if (stateClass == ContentState::class) showContentViews()
-            else createOrShowState(stateClass, params)
-            currentState = stateClass
-            onStatedChangeListener?.onStatedChange(stateClass)
-        }
-    }
-
-    private fun showContentViews() {
-        children.forEach {
-            val params = it.layoutParams
-            if (params is LayoutParams && !params.isStateChildView) {
-                when (params.showStrategy) {
-                    LayoutParams.CONTENT_STATE -> {
-                        if (canUseAnimation()) {
-                            if (it.visibility != View.VISIBLE) animate.createAnimate(it)
-                            animate.showAnimate(it) { it.visibility = View.VISIBLE }
-                        } else it.visibility = View.VISIBLE
-                    }
-                    LayoutParams.OTHER_STATE -> {
-                        if (canUseAnimation()) {
-                            animate.hideAnimate(it) { it.visibility = View.INVISIBLE }
-                        } else it.visibility = View.INVISIBLE
-                    }
-                }
+        val isHasState = children.find { it::class == stateClass }
+        if (isHasState == null && stateClass != ContentState::class) createOtherState(stateClass)
+        forEach {
+            if (stateClass == ContentState::class) {
+                showContentState(it, isAnimate)
+                hideOtherState(it, isAnimate)
+            } else {
+                showOtherState(it, stateClass, params, isAnimate)
             }
         }
+        currentState = stateClass
+        onStatedChangeListener?.onStatedChange(stateClass)
     }
 
-    private fun hideContentViews() {
-        children.forEach {
-            val params = it.layoutParams
-            if (params is LayoutParams && !params.isStateChildView) {
-                when (params.showStrategy) {
-                    LayoutParams.CONTENT_STATE -> {
-                        if (canUseAnimation()) {
-                            animate.hideAnimate(it) { it.visibility = View.INVISIBLE }
-                        } else it.visibility = View.INVISIBLE
-                    }
-                    LayoutParams.OTHER_STATE -> {
-                        if (canUseAnimation()) {
-                            if (it.visibility != View.VISIBLE) animate.createAnimate(it)
-                            animate.showAnimate(it) { it.visibility = View.VISIBLE }
-                        } else it.visibility = View.VISIBLE
-                    }
-                }
+    private fun showContentState(view: View, isAnimate: Boolean) {
+        val lp = view.layoutParams
+        if (lp !is LayoutParams) return
+        if (lp.isStateView) return
+        when (lp.visibilityStrategy) {
+            // 如果是Content状态显示策略，那么就显示
+            LayoutParams.CONTENT -> if (isAnimate && canUseAnimate()) {
+                if (view.visibility != View.VISIBLE) animate.createAnimate(view)
+                animate.showAnimate(view) { view.visibility = View.VISIBLE }
+            } else view.visibility = View.VISIBLE
+            // 如果是其他状态显示策略，那么就隐藏
+            LayoutParams.OTHER -> if (isAnimate && canUseAnimate()) {
+                animate.hideAnimate(view) { view.visibility = View.GONE }
+            } else view.visibility = View.GONE
+        }
+    }
+
+    private fun hideContentState(view: View, isAnimate: Boolean) {
+        val lp = view.layoutParams
+        if (lp !is LayoutParams) return
+        if (lp.isStateView) return
+        when (lp.visibilityStrategy) {
+            // 如果是Content状态显示策略，那么就隐藏
+            LayoutParams.CONTENT -> if (isAnimate && canUseAnimate()) {
+                animate.hideAnimate(view) { view.visibility = View.GONE }
+            } else view.visibility = View.GONE
+            // 如果是其他状态显示策略，那么就显示
+            LayoutParams.OTHER -> if (isAnimate && canUseAnimate()) {
+                if (view.visibility != View.VISIBLE) animate.createAnimate(view)
+                animate.showAnimate(view) { view.visibility = View.VISIBLE }
+            } else view.visibility = View.VISIBLE
+        }
+    }
+
+    private fun createOtherState(stateClass: KClass<out AbstractState>) {
+        val constructor = stateClass.java.getConstructor(Context::class.java)
+        val state = constructor.newInstance(context)
+        addView(state, state.generateLayoutParams())
+        state.getRetryEventView()?.setOnClickListener {
+            if (isEnabled) onRetryEventListener?.onStateRetry(stateClass)
+        }
+    }
+
+    private fun showOtherState(
+        view: View, stateClass: KClass<out AbstractState>, params: Any?, isAnimate: Boolean
+    ) {
+        if (view::class == stateClass) {
+            val stateView = (view as AbstractState)
+            stateView.onChangeParams(params)
+            if (isAnimate && stateView.isShowAnimate() && canUseAnimate()) {
+                if (stateView.visibility != View.VISIBLE) animate.createAnimate(stateView)
+                animate.showAnimate(stateView) { stateView.visibility = View.VISIBLE }
+            } else stateView.visibility = View.VISIBLE
+            forEach {
+                if (stateView.isMeanwhileContent()) showContentState(it, isAnimate)
+                else hideContentState(it, isAnimate)
             }
-        }
+        } else hideOtherState(view, isAnimate)
     }
 
-    private fun createOrShowState(stateClass: KClass<out AbstractState>, params: Any?) {
-        val temp = existingOtherState[stateClass]
-        val state = temp ?: stateClass.java.newInstance()
-        if (temp == null) createState(state, params) else showState(state, params)
-        if (state.isMeanwhileContent) showContentViews() else hideContentViews()
-        existingOtherState[stateClass] = state
+    private fun hideOtherState(view: View, isAnimate: Boolean) {
+        val lp = view.layoutParams
+        if (lp !is LayoutParams) return
+        if (!lp.isStateView) return
+        val stateView = (view as AbstractState)
+        if (isAnimate && stateView.isHideAnimate() && canUseAnimate()) {
+            animate.hideAnimate(stateView) { removeView(stateView) }
+        } else removeView(stateView)
     }
 
-    private fun createState(state: AbstractState, params: Any?) {
-        state.obtainTargetView(context)
-        if (state.targetView.parent == null) {
-            val lp = state.generateLayoutParams().apply { isStateChildView = true }
-            addView(state.targetView, lp)
-        }
-        state.onAttach(state.targetView, params)
-        if (canUseAnimation(state)) {
-            animate.createAnimate(state.targetView)
-            animate.showAnimate(state.targetView) { state.targetView.visibility = View.VISIBLE }
-        } else state.targetView.visibility = View.VISIBLE
-    }
 
-    private fun showState(state: AbstractState, params: Any?) {
-        if (state.targetView.parent == null) {
-            val lp = state.generateLayoutParams().apply { isStateChildView = true }
-            addView(state.targetView, lp)
-        }
-        state.onChangeParams(state.targetView, params)
-        if (canUseAnimation(state)) {
-            animate.showAnimate(state.targetView) { state.targetView.visibility = View.VISIBLE }
-        } else state.targetView.visibility = View.VISIBLE
-    }
-
-    private fun hideAllOtherState() {
-        existingOtherState.forEach { hideState(it.key) }
-    }
-
-    private fun hideState(stateClass: KClass<out AbstractState>) {
-        val state = existingOtherState[stateClass] ?: return
-        if (canUseAnimation(state)) {
-            animate.hideAnimate(state.targetView) {
-                state.onDetach(state.targetView) {
-                    if (contains(state.targetView)) removeView(state.targetView)
-                    existingOtherState.remove(stateClass)
-                }
-            }
-        } else {
-            state.onDetach(state.targetView) {
-                if (contains(state.targetView)) removeView(state.targetView)
-                existingOtherState.remove(stateClass)
-            }
-        }
-    }
-
-    private fun canUseAnimation() =
-        isEnableAnimation && isAttachedToWindow && isVisible && isEnabled
-
-    private fun canUseAnimation(state: AbstractState) =
-        state.isEnableHideAnimation && isEnableAnimation && isAttachedToWindow && isVisible && isEnabled
+    private fun canUseAnimate() = isAttachedToWindow && isVisible && isEnabled
 
     /**
      * 设置重试操作监听
      */
-    fun setOnRetryEventListener(block: (() -> Unit)) {
+    fun setOnRetryEventListener(block: ((KClass<out AbstractState>) -> Unit)) {
         onRetryEventListener = OnRetryEventListener(block)
     }
 
@@ -240,11 +219,11 @@ open class StateLayout @JvmOverloads constructor(
         }
         super.onRestoreInstanceState(state.superState)
         if (state.currentStateClassName != null) {
-            val clazz = Class.forName(state.currentStateClassName!!)
-            val temp = isEnableAnimation
-            isEnableAnimation = false
-            show(clazz.kotlin as KClass<out AbstractState>)
-            isEnableAnimation = temp
+            showInternal(
+                Class.forName(state.currentStateClassName!!).kotlin as KClass<out AbstractState>,
+                null,
+                false
+            )
         }
     }
 
@@ -261,6 +240,15 @@ open class StateLayout @JvmOverloads constructor(
             else -> LayoutParams(lp)
         }
 
+    override fun addView(child: View?, index: Int, params: ViewGroup.LayoutParams?) {
+        val temp = params as? LayoutParams ?: (generateLayoutParams(params) as LayoutParams)
+        if (child != null) {
+            temp.isStateView = child is AbstractState
+            checkChildViewUpdateIsNeedRequestLayout(child, temp)
+        }
+        super.addView(child, index, params)
+    }
+
     /**
      * 检查子View是否需要更新布局
      */
@@ -270,43 +258,26 @@ open class StateLayout @JvmOverloads constructor(
         if (child == null) return
         if (layoutParams !is LayoutParams) return
         when {
-            layoutParams.isStateChildView -> return
-            layoutParams.showStrategy == LayoutParams.CONTENT_STATE -> {
-                if (currentState == ContentState::class) {
-                    if (child.visibility != View.VISIBLE) {
-                        child.visibility = View.VISIBLE
-                    }
-                } else {
-                    if (child.visibility == View.VISIBLE) {
-                        child.visibility = View.INVISIBLE
-                    }
-                }
-            }
-            layoutParams.showStrategy == LayoutParams.OTHER_STATE -> {
-                if (currentState == ContentState::class) {
-                    if (child.visibility == View.VISIBLE) {
-                        child.visibility = View.INVISIBLE
-                    }
-                } else {
-                    if (child.visibility != View.VISIBLE) {
-                        child.visibility = View.VISIBLE
-                    }
-                }
-            }
+            layoutParams.isStateView -> child.visibility =
+                if (currentState == child::class) View.VISIBLE else View.GONE
+            layoutParams.visibilityStrategy == LayoutParams.CONTENT -> child.visibility =
+                if (currentState == ContentState::class) View.VISIBLE else View.GONE
+            layoutParams.visibilityStrategy == LayoutParams.OTHER -> child.visibility =
+                if (currentState == ContentState::class) View.INVISIBLE else View.GONE
         }
     }
 
     class LayoutParams : FrameLayout.LayoutParams {
 
-        internal var isStateChildView: Boolean = false
+        internal var isStateView: Boolean = false
 
         @ShowStrategy
-        var showStrategy: Int = CONTENT_STATE
+        var visibilityStrategy: Int = CONTENT
 
         constructor(c: Context, attrs: AttributeSet?) : super(c, attrs) {
             val a = c.obtainStyledAttributes(attrs, R.styleable.StateLayout_Layout)
-            showStrategy =
-                a.getInt(R.styleable.StateLayout_Layout_layout_showStrategy, CONTENT_STATE)
+            visibilityStrategy =
+                a.getInt(R.styleable.StateLayout_Layout_layout_visibilityStrategy, CONTENT)
             a.recycle()
         }
 
@@ -316,18 +287,18 @@ open class StateLayout @JvmOverloads constructor(
         constructor(source: MarginLayoutParams) : super(source)
         constructor(source: FrameLayout.LayoutParams) : super(source)
         constructor(source: LayoutParams) : super(source) {
-            showStrategy = source.showStrategy
+            visibilityStrategy = source.visibilityStrategy
         }
 
-        @IntDef(CONTENT_STATE, OTHER_STATE, ALWAYS)
+        @IntDef(CONTENT, OTHER, ALWAYS)
         annotation class ShowStrategy
 
         companion object {
             const val MATCH_PARENT = -1
             const val WRAP_CONTENT = -2
 
-            const val CONTENT_STATE = 0
-            const val OTHER_STATE = 1
+            const val CONTENT = 0
+            const val OTHER = 1
             const val ALWAYS = 2
         }
     }

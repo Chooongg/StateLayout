@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.chooongg.widget.stateLayout.animate.FadeStateAnimate
 import com.chooongg.widget.stateLayout.animate.StateAnimate
 import com.chooongg.widget.stateLayout.state.AbstractState
+import com.chooongg.widget.stateLayout.state.ContentState
 import kotlin.reflect.KClass
 
 /**

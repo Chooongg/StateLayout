@@ -26,9 +26,9 @@ class MainActivity : AppCompatActivity(), OnStatedChangeListener {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         binding.stateLayout.setOnStatedChangeListener(this)
-        binding.switchAnimate.isChecked = binding.stateLayout.isEnableAnimation
+        binding.switchAnimate.isChecked = binding.stateLayout.isEnableAnimate
         binding.switchAnimate.setOnCheckedChangeListener { _, isChecked ->
-            binding.stateLayout.isEnableAnimation = isChecked
+            binding.stateLayout.isEnableAnimate = isChecked
         }
         binding.btnProgressState.setOnClickListener {
             binding.stateLayout.show<ProgressState>()

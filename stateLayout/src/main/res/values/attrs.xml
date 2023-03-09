@@ -2,9 +2,12 @@
 <resources>
     <declare-styleable name="StateLayout_Layout">
         <!-- retain content, not affected by StateLayout -->
-        <attr name="layout_showStrategy" format="enum">
-            <enum name="contentState" value="0" />
-            <enum name="otherState" value="1" />
+        <attr name="layout_visibilityStrategy" format="enum">
+            <!-- display when content status -->
+            <enum name="content" value="0" />
+            <!-- display when other status -->
+            <enum name="other" value="1" />
+            <!-- display when all status -->
             <enum name="always" value="2" />
         </attr>
     </declare-styleable>

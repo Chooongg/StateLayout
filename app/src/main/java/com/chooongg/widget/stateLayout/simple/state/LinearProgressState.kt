@@ -7,26 +7,23 @@ import com.chooongg.widget.stateLayout.StateLayout
 import com.chooongg.widget.stateLayout.state.AbstractState
 import com.google.android.material.progressindicator.LinearProgressIndicator
 
-class LinearProgressState : AbstractState() {
-    override val isEnableShowAnimation: Boolean = true
-    override val isEnableHideAnimation: Boolean = true
-    override val isMeanwhileContent: Boolean = true
-    override fun onCreateView(context: Context): View {
-        return LinearProgressIndicator(context)
+class LinearProgressState(context: Context) : AbstractState(context) {
+
+    val indicator = LinearProgressIndicator(context)
+
+    init {
+        addView(indicator)
     }
 
-    override fun onAttach(view: View, params: Any?) {
-        val indicator = view as LinearProgressIndicator
+    override fun isMeanwhileContent(): Boolean = true
+
+    override fun onChangeParams(params: Any?) {
         if (params is Number) {
             indicator.isIndeterminate = false
             indicator.setProgress(params.toInt(), true)
         } else {
             indicator.isIndeterminate = true
         }
-    }
-
-    override fun onChangeParams(view: View, params: Any?) {
-        onAttach(view, params)
     }
 
     override fun generateLayoutParams(): StateLayout.LayoutParams {
@@ -37,5 +34,5 @@ class LinearProgressState : AbstractState() {
         )
     }
 
-    override fun getReloadEventView(parent: View, view: View) = null
+    override fun getRetryEventView(): View? = null
 }
