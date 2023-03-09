@@ -2,7 +2,9 @@ package com.chooongg.widget.stateLayout
 
 import android.app.Activity
 import android.view.View
-import androidx.fragment.app.Fragment
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.core.view.forEachIndexed
 import com.chooongg.widget.stateLayout.animate.FadeStateAnimate
 import com.chooongg.widget.stateLayout.animate.StateAnimate
 import com.chooongg.widget.stateLayout.state.AbstractState
@@ -29,15 +31,61 @@ object StateLayoutManager {
      */
     var animate: StateAnimate = FadeStateAnimate()
 
-    fun attachStateLayout(activity: Activity) {
-
+    /**
+     * 附加状态布局到Activity
+     */
+    fun attachStateLayout(activity: Activity): StateLayout {
+        val contentView = activity.findViewById<FrameLayout>(android.R.id.content)
+        val stateLayout = StateLayout(activity)
+        if (contentView.childCount > 0) {
+            val childView = contentView.getChildAt(0)
+            val lp = childView.layoutParams
+            contentView.removeView(childView)
+            stateLayout.addView(
+                childView, StateLayout.LayoutParams(
+                    StateLayout.LayoutParams.MATCH_PARENT,
+                    StateLayout.LayoutParams.MATCH_PARENT
+                )
+            )
+            contentView.addView(stateLayout, lp)
+        } else contentView.addView(
+            stateLayout, StateLayout.LayoutParams(
+                StateLayout.LayoutParams.MATCH_PARENT,
+                StateLayout.LayoutParams.MATCH_PARENT
+            )
+        )
+        return stateLayout
     }
 
-    fun attachStateLayout(fragment: Fragment) {
-
-    }
-
-    fun attachStateLayout(view: View) {
-
+    /**
+     * 附加状态布局到View
+     */
+    fun attachStateLayout(view: View): StateLayout {
+        val stateLayout = StateLayout(view.context)
+        if (view.parent != null) {
+            val parent = view.parent as ViewGroup
+            var childIndex = 0
+            parent.forEachIndexed { index, it ->
+                if (it == view) {
+                    childIndex = index
+                    return@forEachIndexed
+                }
+            }
+            val lp = view.layoutParams
+            parent.removeView(view)
+            stateLayout.addView(
+                view, StateLayout.LayoutParams(
+                    StateLayout.LayoutParams.MATCH_PARENT,
+                    StateLayout.LayoutParams.MATCH_PARENT
+                )
+            )
+            parent.addView(stateLayout, childIndex, lp)
+        } else stateLayout.addView(
+            view, StateLayout.LayoutParams(
+                StateLayout.LayoutParams.MATCH_PARENT,
+                StateLayout.LayoutParams.MATCH_PARENT
+            )
+        )
+        return stateLayout
     }
 }
