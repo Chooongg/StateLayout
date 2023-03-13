@@ -8,11 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.chooongg.widget.stateLayout.OnStatedChangeListener
-import com.chooongg.widget.stateLayout.StateLayout
-import com.chooongg.widget.stateLayout.StateLayoutManager
 import com.chooongg.widget.stateLayout.show
 import com.chooongg.widget.stateLayout.simple.databinding.ActivityMainBinding
 import com.chooongg.widget.stateLayout.simple.state.LinearProgressState
+import com.chooongg.widget.stateLayout.simple.state.LottieCelebrationState
 import com.chooongg.widget.stateLayout.simple.state.LottieLoadingState
 import com.chooongg.widget.stateLayout.simple.state.ProgressState
 import com.chooongg.widget.stateLayout.state.AbstractState
@@ -72,6 +71,9 @@ class MainActivity : AppCompatActivity(), OnStatedChangeListener {
         }
         binding.btnLottieLoadingState.setOnClickListener {
             binding.stateLayout.show<LottieLoadingState>()
+        }
+        binding.btnLottieCelebrationState.setOnClickListener {
+            binding.stateLayout.show<LottieCelebrationState>()
         }
     }
 

@@ -26,7 +26,9 @@ abstract class AbstractState constructor(context: Context) : FrameLayout(context
 
     protected fun hideCurrentState(isAnimate: Boolean) {
         if (parent is StateLayout) {
-            (parent as StateLayout).hideOtherState(this, isAnimate)
+            val stateLayout = parent as StateLayout
+            stateLayout.hideOtherState(this, isAnimate)
+            stateLayout.show(stateLayout.preState, isAnimate)
         }
     }
 }

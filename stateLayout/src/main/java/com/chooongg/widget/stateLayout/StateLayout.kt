@@ -33,6 +33,11 @@ open class StateLayout @JvmOverloads constructor(
         private set
 
     /**
+     * 上一个状态
+     */
+    internal var preState: KClass<out AbstractState> = ContentState::class
+
+    /**
      * 是否启用动画
      */
     var isEnableAnimate: Boolean = enableAnimation
@@ -95,6 +100,7 @@ open class StateLayout @JvmOverloads constructor(
                 showOtherState(it, stateClass, params, isAnimate)
             }
         }
+        preState = currentState
         currentState = stateClass
         onStatedChangeListener?.onStatedChange(stateClass)
     }
