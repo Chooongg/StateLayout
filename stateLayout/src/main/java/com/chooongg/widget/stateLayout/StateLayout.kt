@@ -159,7 +159,7 @@ open class StateLayout @JvmOverloads constructor(
         } else hideOtherState(view, isAnimate)
     }
 
-    private fun hideOtherState(view: View, isAnimate: Boolean) {
+    internal fun hideOtherState(view: View, isAnimate: Boolean) {
         val lp = view.layoutParams
         if (lp !is LayoutParams) return
         if (!lp.isStateView) return

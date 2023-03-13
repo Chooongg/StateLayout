@@ -23,4 +23,10 @@ abstract class AbstractState constructor(context: Context) : FrameLayout(context
         StateLayout.LayoutParams.WRAP_CONTENT,
         Gravity.CENTER
     )
+
+    protected fun hideCurrentState(isAnimate: Boolean) {
+        if (parent is StateLayout) {
+            (parent as StateLayout).hideOtherState(this, isAnimate)
+        }
+    }
 }
