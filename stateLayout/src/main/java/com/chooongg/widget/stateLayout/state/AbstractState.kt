@@ -14,7 +14,7 @@ abstract class AbstractState constructor(context: Context) : FrameLayout(context
 
     open fun isMeanwhileContent(): Boolean = false
 
-    abstract fun onChangeParams(params: Any?)
+    open fun onChangeParams(params: Any?) {}
 
     open fun getRetryEventView(): View? = null
 
@@ -24,11 +24,18 @@ abstract class AbstractState constructor(context: Context) : FrameLayout(context
         Gravity.CENTER
     )
 
-    protected fun hideCurrentState(isAnimate: Boolean) {
+    /**
+     * 隐藏当前状态
+     */
+    protected fun hideCurrentState() {
         if (parent is StateLayout) {
             val stateLayout = parent as StateLayout
-            stateLayout.hideOtherState(this, isAnimate)
-            stateLayout.show(stateLayout.preState, isAnimate)
+            stateLayout.post {
+                stateLayout.hideOtherState(
+                    this,
+                    isHideAnimate() && stateLayout.isEnableAnimate && stateLayout.canUseAnimate()
+                ) { stateLayout.showPrevious() }
+            }
         }
     }
 }

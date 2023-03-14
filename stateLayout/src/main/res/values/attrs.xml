@@ -3,12 +3,14 @@
     <declare-styleable name="StateLayout_Layout">
         <!-- retain content, not affected by StateLayout -->
         <attr name="layout_visibilityStrategy" format="enum">
-            <!-- display when content status -->
+            <!-- display when content state -->
             <enum name="content" value="0" />
-            <!-- display when other status -->
+            <!-- display when other state -->
             <enum name="other" value="1" />
-            <!-- display when all status -->
-            <enum name="always" value="2" />
+            <!-- display when other state and ignore content state -->
+            <enum name="otherIgnoreContent" value="2" />
+            <!-- display when all state -->
+            <enum name="always" value="3" />
         </attr>
     </declare-styleable>
 

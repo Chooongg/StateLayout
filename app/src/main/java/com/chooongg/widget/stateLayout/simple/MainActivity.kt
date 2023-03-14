@@ -3,9 +3,10 @@ package com.chooongg.widget.stateLayout.simple
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.chooongg.widget.stateLayout.OnStatedChangeListener
 import com.chooongg.widget.stateLayout.show
@@ -26,15 +27,21 @@ class MainActivity : AppCompatActivity(), OnStatedChangeListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { v, insets ->
+            val inset = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(inset.left, 0, inset.right, inset.bottom)
+            insets
+        }
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+        supportActionBar?.subtitle = binding.stateLayout.currentState.simpleName
         binding.stateLayout.setOnStatedChangeListener(this)
         binding.switchAnimate.isChecked = binding.stateLayout.isEnableAnimate
         binding.switchAnimate.setOnCheckedChangeListener { _, isChecked ->
             binding.stateLayout.isEnableAnimate = isChecked
         }
         binding.btnProgressState.setOnClickListener {
-            binding.stateLayout.show<ProgressState>()
+            binding.stateLayout.show<ProgressState>(Test("test"))
         }
         binding.btnProgressStateProgress.setOnClickListener {
             binding.stateLayout.show<ProgressState>(0)
@@ -77,6 +84,8 @@ class MainActivity : AppCompatActivity(), OnStatedChangeListener {
         }
     }
 
+    data class Test(val temp: String)
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.content, menu)
         return super.onCreateOptionsMenu(menu)
@@ -91,6 +100,6 @@ class MainActivity : AppCompatActivity(), OnStatedChangeListener {
     }
 
     override fun onStatedChange(state: KClass<out AbstractState>) {
-        Toast.makeText(this, state.simpleName, Toast.LENGTH_SHORT).show()
+        supportActionBar?.subtitle = state.simpleName
     }
 }

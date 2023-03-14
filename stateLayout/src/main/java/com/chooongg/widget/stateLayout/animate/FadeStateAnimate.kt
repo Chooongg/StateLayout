@@ -17,4 +17,8 @@ class FadeStateAnimate : StateAnimate() {
         view.animate().cancel()
         view.animate().alpha(0f).withStartAction(startBlock).withEndAction(endBlock)
     }
+
+    override fun reset(view: View) {
+        view.alpha = 1f
+    }
 }

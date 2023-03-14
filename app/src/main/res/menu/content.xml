@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <item
         android:id="@+id/contentState"
-        android:title="Content State"
-        app:showAsAction="ifRoom" />
+        android:title="Content"
+        app:showAsAction="ifRoom"
+        tools:ignore="HardcodedText" />
 </menu>

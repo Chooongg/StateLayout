@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.AbsSavedState
 import android.view.View
 import android.view.ViewGroup
@@ -32,10 +33,14 @@ open class StateLayout @JvmOverloads constructor(
     var currentState: KClass<out AbstractState> = ContentState::class
         private set
 
+    private var currentStateParams: Any? = null
+
     /**
      * 上一个状态
      */
-    internal var preState: KClass<out AbstractState> = ContentState::class
+    private var preState: KClass<out AbstractState> = ContentState::class
+
+    private var preStateParams: Any? = null
 
     /**
      * 是否启用动画
@@ -83,7 +88,7 @@ open class StateLayout @JvmOverloads constructor(
     /**
      * show status internal implementation
      */
-    private fun showInternal(
+    internal fun showInternal(
         stateClass: KClass<out AbstractState>, params: Any? = null, isAnimate: Boolean
     ) {
         if (stateClass == currentState) {
@@ -101,8 +106,14 @@ open class StateLayout @JvmOverloads constructor(
             }
         }
         preState = currentState
+        preStateParams = currentStateParams
         currentState = stateClass
-        onStatedChangeListener?.onStatedChange(stateClass)
+        currentStateParams = params
+        onStatedChangeListener?.onStatedChange(currentState)
+    }
+
+    internal fun showPrevious(params: Any? = null) {
+        showInternal(preState, params, isEnableAnimate)
     }
 
     private fun showContentState(view: View, isAnimate: Boolean) {
@@ -114,11 +125,27 @@ open class StateLayout @JvmOverloads constructor(
             LayoutParams.CONTENT -> if (isAnimate && canUseAnimate()) {
                 if (view.visibility != View.VISIBLE) animate.createAnimate(view)
                 animate.showAnimate(view) { view.visibility = View.VISIBLE }
-            } else view.visibility = View.VISIBLE
+            } else {
+                animate.reset(view)
+                view.visibility = View.VISIBLE
+            }
             // 如果是其他状态显示策略，那么就隐藏
             LayoutParams.OTHER -> if (isAnimate && canUseAnimate()) {
                 animate.hideAnimate(view) { view.visibility = View.GONE }
             } else view.visibility = View.GONE
+            LayoutParams.OTHER_IGNORE_CONTENT -> if (currentState == ContentState::class) {
+                if (isAnimate && canUseAnimate()) {
+                    if (view.visibility != View.VISIBLE) animate.createAnimate(view)
+                    animate.showAnimate(view) { view.visibility = View.VISIBLE }
+                } else {
+                    animate.reset(view)
+                    view.visibility = View.VISIBLE
+                }
+            } else {
+                if (isAnimate && canUseAnimate()) {
+                    animate.hideAnimate(view) { view.visibility = View.GONE }
+                } else view.visibility = View.GONE
+            }
         }
     }
 
@@ -135,7 +162,24 @@ open class StateLayout @JvmOverloads constructor(
             LayoutParams.OTHER -> if (isAnimate && canUseAnimate()) {
                 if (view.visibility != View.VISIBLE) animate.createAnimate(view)
                 animate.showAnimate(view) { view.visibility = View.VISIBLE }
-            } else view.visibility = View.VISIBLE
+            } else {
+                animate.reset(view)
+                view.visibility = View.VISIBLE
+            }
+            // 如果是其他状态显示策略，那么就显示(忽略是否显示内容)
+            LayoutParams.OTHER_IGNORE_CONTENT -> if (currentState == ContentState::class) {
+                if (isAnimate && canUseAnimate()) {
+                    if (view.visibility != View.VISIBLE) animate.createAnimate(view)
+                    animate.showAnimate(view) { view.visibility = View.VISIBLE }
+                } else {
+                    animate.reset(view)
+                    view.visibility = View.VISIBLE
+                }
+            } else {
+                if (isAnimate && canUseAnimate()) {
+                    animate.hideAnimate(view) { view.visibility = View.GONE }
+                } else view.visibility = View.GONE
+            }
         }
     }
 
@@ -157,7 +201,10 @@ open class StateLayout @JvmOverloads constructor(
             if (isAnimate && stateView.isShowAnimate() && canUseAnimate()) {
                 if (stateView.visibility != View.VISIBLE) animate.createAnimate(stateView)
                 animate.showAnimate(stateView) { stateView.visibility = View.VISIBLE }
-            } else stateView.visibility = View.VISIBLE
+            } else {
+                animate.reset(stateView)
+                stateView.visibility = View.VISIBLE
+            }
             forEach {
                 if (stateView.isMeanwhileContent()) showContentState(it, isAnimate)
                 else hideContentState(it, isAnimate)
@@ -165,18 +212,24 @@ open class StateLayout @JvmOverloads constructor(
         } else hideOtherState(view, isAnimate)
     }
 
-    internal fun hideOtherState(view: View, isAnimate: Boolean) {
+    internal fun hideOtherState(view: View, isAnimate: Boolean, endBlock: (() -> Unit)? = null) {
         val lp = view.layoutParams
         if (lp !is LayoutParams) return
         if (!lp.isStateView) return
         val stateView = (view as AbstractState)
         if (isAnimate && stateView.isHideAnimate() && canUseAnimate()) {
-            animate.hideAnimate(stateView) { removeView(stateView) }
-        } else removeView(stateView)
+            animate.hideAnimate(stateView) {
+                removeView(stateView)
+                endBlock?.invoke()
+            }
+        } else {
+            removeView(stateView)
+            endBlock?.invoke()
+        }
     }
 
 
-    private fun canUseAnimate() = isAttachedToWindow && isVisible && isEnabled
+    internal fun canUseAnimate() = isAttachedToWindow && isVisible && isEnabled
 
     /**
      * 设置重试操作监听
@@ -206,6 +259,7 @@ open class StateLayout @JvmOverloads constructor(
         onStatedChangeListener = listener
     }
 
+    @Suppress("unused")
     protected open fun onSetLayoutParams(child: View?, layoutParams: ViewGroup.LayoutParams?) {
         checkChildViewUpdateIsNeedRequestLayout(child, layoutParams)
         requestLayout()
@@ -214,6 +268,9 @@ open class StateLayout @JvmOverloads constructor(
     override fun onSaveInstanceState(): Parcelable? {
         val state = SavedState(super.onSaveInstanceState())
         state.currentStateClassName = currentState.java.name
+        state.currentStateParams = currentStateParams
+        state.preStateClassName = preState.java.name
+        state.preStateParams = preStateParams
         return state
     }
 
@@ -224,15 +281,20 @@ open class StateLayout @JvmOverloads constructor(
             return
         }
         super.onRestoreInstanceState(state.superState)
+        currentStateParams = state.currentStateParams
         if (state.currentStateClassName != null) {
             val temp = onStatedChangeListener
             onStatedChangeListener = null
             showInternal(
                 Class.forName(state.currentStateClassName!!).kotlin as KClass<out AbstractState>,
-                null,
+                currentStateParams,
                 false
             )
             onStatedChangeListener = temp
+        }
+        preStateParams = state.preStateParams
+        if (state.preStateClassName != null) {
+            preState = Class.forName(state.preStateClassName!!).kotlin as KClass<out AbstractState>
         }
     }
 
@@ -264,6 +326,7 @@ open class StateLayout @JvmOverloads constructor(
     private fun checkChildViewUpdateIsNeedRequestLayout(
         child: View?, layoutParams: ViewGroup.LayoutParams?
     ) {
+        if (isInEditMode) return
         if (child == null) return
         if (layoutParams !is LayoutParams) return
         when {
@@ -272,7 +335,9 @@ open class StateLayout @JvmOverloads constructor(
             layoutParams.visibilityStrategy == LayoutParams.CONTENT -> child.visibility =
                 if (currentState == ContentState::class) View.VISIBLE else View.GONE
             layoutParams.visibilityStrategy == LayoutParams.OTHER -> child.visibility =
-                if (currentState == ContentState::class) View.INVISIBLE else View.GONE
+                if (currentState == ContentState::class) View.GONE else View.VISIBLE
+            layoutParams.visibilityStrategy == LayoutParams.OTHER_IGNORE_CONTENT -> child.visibility =
+                if (currentState == ContentState::class) View.GONE else View.VISIBLE
         }
     }
 
@@ -308,23 +373,43 @@ open class StateLayout @JvmOverloads constructor(
 
             const val CONTENT = 0
             const val OTHER = 1
-            const val ALWAYS = 2
+            const val OTHER_IGNORE_CONTENT = 2
+            const val ALWAYS = 3
         }
     }
 
     class SavedState : AbsSavedState {
 
         var currentStateClassName: String? = null
+        var currentStateParams: Any? = null
+        var preStateClassName: String? = null
+        var preStateParams: Any? = null
 
         constructor(superState: Parcelable?) : super(superState)
         constructor(source: Parcel) : this(source, null)
         constructor(source: Parcel, loader: ClassLoader?) : super(source, loader) {
             currentStateClassName = source.readString()
+            currentStateParams = source.readValue(ClassLoader.getSystemClassLoader())
+            preStateClassName = source.readString()
+            preStateParams = source.readValue(ClassLoader.getSystemClassLoader())
         }
 
         override fun writeToParcel(dest: Parcel, flags: Int) {
             super.writeToParcel(dest, flags)
+
             dest.writeString(currentStateClassName)
+            try {
+                dest.writeValue(currentStateParams)
+            } catch (e: Exception) {
+                dest.writeValue(null)
+            }
+
+            dest.writeString(preStateClassName)
+            try {
+                dest.writeValue(preStateParams)
+            } catch (e: Exception) {
+                dest.writeValue(null)
+            }
         }
 
         companion object CREATOR : Parcelable.ClassLoaderCreator<SavedState> {
