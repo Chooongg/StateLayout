@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.AbsSavedState
 import android.view.View
 import android.view.ViewGroup
@@ -88,7 +87,7 @@ open class StateLayout @JvmOverloads constructor(
     /**
      * show status internal implementation
      */
-    internal fun showInternal(
+    private fun showInternal(
         stateClass: KClass<out AbstractState>, params: Any? = null, isAnimate: Boolean
     ) {
         if (stateClass == currentState) {

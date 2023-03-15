@@ -36,7 +36,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.7.0-alpha02'
     implementation 'com.google.android.material:material:1.9.0-alpha02'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.0-alpha07'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0-alpha08'
     implementation 'com.airbnb.android:lottie:6.0.0'
     implementation 'com.facebook.stetho:stetho:1.6.0'
 }
