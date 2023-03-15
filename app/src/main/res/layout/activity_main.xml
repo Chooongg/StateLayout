@@ -35,7 +35,9 @@
                 android:gravity="center_vertical"
                 android:orientation="vertical"
                 android:paddingStart="32dp"
+                android:paddingTop="48dp"
                 android:paddingEnd="32dp"
+                android:paddingBottom="48dp"
                 app:divider="@drawable/divider_16dp"
                 app:showDividers="beginning|middle|end">
 
@@ -100,6 +102,16 @@
             android:layout_margin="16dp"
             android:text="otherIgnoreContent"
             app:layout_visibilityStrategy="otherIgnoreContent" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fab_always"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:text="always state"
+            app:icon="@android:drawable/ic_media_play"
+            app:layout_visibilityStrategy="always" />
 
     </com.chooongg.widget.stateLayout.StateLayout>
 

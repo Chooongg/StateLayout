@@ -16,6 +16,7 @@ import com.chooongg.widget.stateLayout.simple.state.LottieCelebrationState
 import com.chooongg.widget.stateLayout.simple.state.LottieLoadingState
 import com.chooongg.widget.stateLayout.simple.state.ProgressState
 import com.chooongg.widget.stateLayout.state.AbstractState
+import com.chooongg.widget.stateLayout.state.ContentState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
@@ -101,5 +102,10 @@ class MainActivity : AppCompatActivity(), OnStatedChangeListener {
 
     override fun onStatedChange(state: KClass<out AbstractState>) {
         supportActionBar?.subtitle = state.simpleName
+        if (state == ContentState::class) {
+            binding.fabAlways.shrink()
+        } else {
+            binding.fabAlways.extend()
+        }
     }
 }
