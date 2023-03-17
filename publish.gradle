@@ -13,14 +13,6 @@ ext["signing.secretKeyRingFile"] = properties.getProperty('signing.secretKeyRing
 ext["ossrhUsername"] = properties.getProperty('maven.username')
 ext["ossrhPassword"] = properties.getProperty('maven.password')
 
-
-def GROUP_ID = 'com.chooongg.widget'
-def ARTIFACT_ID = 'statelayout'
-def VERSION_NAME = '1.0.0'
-def DESCRIPTION = '状态布局'
-def URL_INFIX = 'github.com/Chooongg/StateLayout'
-def GIT_INFIX = 'github.com:Chooongg/StateLayout'
-
 //指定快照版本 maven仓库url
 def SNAPSHOTS_REPO_URL = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
 //指定正式版本 maven仓库url
