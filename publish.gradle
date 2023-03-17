@@ -27,7 +27,6 @@ afterEvaluate {
                 allowInsecureProtocol = false
                 url = VERSION_NAME.endsWith('SNAPSHOT') ? SNAPSHOTS_REPO_URL : RELEASES_REPO_URL
                 credentials {
-                    println("${ossrhUsername},${ossrhPassword}")
                     username = ossrhUsername //maven仓库账号
                     password = ossrhPassword //maven仓库账号
                 }
