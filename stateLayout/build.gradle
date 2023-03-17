@@ -32,3 +32,12 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
+
+ext {
+    GROUP_ID = 'com.chooongg.widget'
+    ARTIFACT_ID = 'statelayout'
+    DESCRIPTION = 'android state switching layout, fast implement any desired state effect'
+    URL_INFIX = 'github.com/Chooongg/StateLayout'
+    GIT_INFIX = 'github.com:Chooongg/StateLayout'
+}
+apply from: '../publish.gradle'
