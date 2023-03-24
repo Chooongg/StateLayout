@@ -11,7 +11,7 @@
 
 # StateLayout
 - built on 2022.1.1 Patch 2 with AndroidX.
-- Please read also [issues](https://github.com/davideas/FlexibleAdapter/issues) and [releases](https://github.com/davideas/FlexibleAdapter/releases).
+- Please read also [issues](https://github.com/Chooongg/StateLayout/issues) and [releases](https://github.com/Chooongg/StateLayout/releases).
 
 ```groovy
 implementation 'com.chooongg.widget:statelayout:0.0.2'
