@@ -5,3 +5,7 @@
 </div>
 
 # StateLayout
+
+```groovy
+implementation 'com.chooongg.widget:statelayout:0.0.2'
+```
