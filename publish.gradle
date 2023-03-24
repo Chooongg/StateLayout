@@ -35,9 +35,8 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 //添加这个，否则aar文件不上传
-                //from components.release
                 artifact(tasks.getByName("bundleReleaseAar"))
-                //artifact(androidJavadocsJar)
+                artifact(androidJavadocsJar)
                 artifact(androidSourcesJar)
                 groupId = GROUP_ID // 唯一标识（通常为模块包名，也可以任意）
                 artifactId = ARTIFACT_ID // 项目名称（通常为类库模块名称，也可以任意）
