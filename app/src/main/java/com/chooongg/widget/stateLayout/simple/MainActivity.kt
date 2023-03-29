@@ -41,9 +41,6 @@ class MainActivity : AppCompatActivity(), OnStatedChangeListener {
         binding.switchAnimate.setOnCheckedChangeListener { _, isChecked ->
             binding.stateLayout.isEnableAnimate = isChecked
         }
-        binding.btnProgressState.setOnClickListener {
-            binding.stateLayout.show<ProgressState>(Test("test"))
-        }
         binding.btnProgressStateProgress.setOnClickListener {
             binding.stateLayout.show<ProgressState>(0)
             lifecycleScope.launch {
@@ -83,21 +80,6 @@ class MainActivity : AppCompatActivity(), OnStatedChangeListener {
         binding.btnLottieCelebrationState.setOnClickListener {
             binding.stateLayout.show<LottieCelebrationState>()
         }
-    }
-
-    data class Test(val temp: String)
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.content, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.contentState) {
-            binding.stateLayout.showContent()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onStatedChange(state: KClass<out AbstractState>) {
