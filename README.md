@@ -11,8 +11,14 @@
 - built on 2022.1.1 Patch 2 with AndroidX.
 - Please read also [issues](https://github.com/Chooongg/StateLayout/issues) and [releases](https://github.com/Chooongg/StateLayout/releases).
 
-# Setup
-#### build.gradle
+## Setup
+
+#### Gradle
+
+On your module's `build.gradle` file add this implementation statement to the `dependencies` section:
+
 ```groovy
-implementation 'com.chooongg.widget:statelayout:0.0.2'
+dependencies {
+    implementation 'com.chooongg.widget:statelayout:0.0.2'
+}
 ```
