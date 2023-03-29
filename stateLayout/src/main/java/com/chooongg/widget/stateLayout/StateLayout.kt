@@ -32,14 +32,10 @@ open class StateLayout @JvmOverloads constructor(
     var currentState: KClass<out AbstractState> = ContentState::class
         private set
 
-    private var currentStateParams: Any? = null
-
     /**
      * 上一个状态
      */
     private var preState: KClass<out AbstractState> = ContentState::class
-
-    private var preStateParams: Any? = null
 
     /**
      * 是否启用动画
@@ -105,9 +101,7 @@ open class StateLayout @JvmOverloads constructor(
             }
         }
         preState = currentState
-        preStateParams = currentStateParams
         currentState = stateClass
-        currentStateParams = params
         onStatedChangeListener?.onStatedChange(currentState)
     }
 
@@ -125,7 +119,7 @@ open class StateLayout @JvmOverloads constructor(
                 if (view.visibility != View.VISIBLE) animate.createAnimate(view)
                 animate.showAnimate(view) { view.visibility = View.VISIBLE }
             } else {
-                animate.reset(view)
+                animate.resetAnimate(view)
                 view.visibility = View.VISIBLE
             }
             // 如果是其他状态显示策略，那么就隐藏
@@ -137,7 +131,7 @@ open class StateLayout @JvmOverloads constructor(
                     if (view.visibility != View.VISIBLE) animate.createAnimate(view)
                     animate.showAnimate(view) { view.visibility = View.VISIBLE }
                 } else {
-                    animate.reset(view)
+                    animate.resetAnimate(view)
                     view.visibility = View.VISIBLE
                 }
             } else {
@@ -162,7 +156,7 @@ open class StateLayout @JvmOverloads constructor(
                 if (view.visibility != View.VISIBLE) animate.createAnimate(view)
                 animate.showAnimate(view) { view.visibility = View.VISIBLE }
             } else {
-                animate.reset(view)
+                animate.resetAnimate(view)
                 view.visibility = View.VISIBLE
             }
             // 如果是其他状态显示策略，那么就显示(忽略是否显示内容)
@@ -171,7 +165,7 @@ open class StateLayout @JvmOverloads constructor(
                     if (view.visibility != View.VISIBLE) animate.createAnimate(view)
                     animate.showAnimate(view) { view.visibility = View.VISIBLE }
                 } else {
-                    animate.reset(view)
+                    animate.resetAnimate(view)
                     view.visibility = View.VISIBLE
                 }
             } else {
@@ -201,7 +195,7 @@ open class StateLayout @JvmOverloads constructor(
                 if (stateView.visibility != View.VISIBLE) animate.createAnimate(stateView)
                 animate.showAnimate(stateView) { stateView.visibility = View.VISIBLE }
             } else {
-                animate.reset(stateView)
+                animate.resetAnimate(stateView)
                 stateView.visibility = View.VISIBLE
             }
             forEach {
@@ -267,9 +261,7 @@ open class StateLayout @JvmOverloads constructor(
     override fun onSaveInstanceState(): Parcelable? {
         val state = SavedState(super.onSaveInstanceState())
         state.currentStateClassName = currentState.java.name
-        state.currentStateParams = currentStateParams
         state.preStateClassName = preState.java.name
-        state.preStateParams = preStateParams
         return state
     }
 
@@ -280,18 +272,16 @@ open class StateLayout @JvmOverloads constructor(
             return
         }
         super.onRestoreInstanceState(state.superState)
-        currentStateParams = state.currentStateParams
         if (state.currentStateClassName != null) {
             val temp = onStatedChangeListener
             onStatedChangeListener = null
             showInternal(
                 Class.forName(state.currentStateClassName!!).kotlin as KClass<out AbstractState>,
-                currentStateParams,
+                null,
                 false
             )
             onStatedChangeListener = temp
         }
-        preStateParams = state.preStateParams
         if (state.preStateClassName != null) {
             preState = Class.forName(state.preStateClassName!!).kotlin as KClass<out AbstractState>
         }
@@ -380,35 +370,19 @@ open class StateLayout @JvmOverloads constructor(
     class SavedState : AbsSavedState {
 
         var currentStateClassName: String? = null
-        var currentStateParams: Any? = null
         var preStateClassName: String? = null
-        var preStateParams: Any? = null
 
         constructor(superState: Parcelable?) : super(superState)
         constructor(source: Parcel) : this(source, null)
         constructor(source: Parcel, loader: ClassLoader?) : super(source, loader) {
             currentStateClassName = source.readString()
-            currentStateParams = source.readValue(ClassLoader.getSystemClassLoader())
             preStateClassName = source.readString()
-            preStateParams = source.readValue(ClassLoader.getSystemClassLoader())
         }
 
         override fun writeToParcel(dest: Parcel, flags: Int) {
             super.writeToParcel(dest, flags)
-
             dest.writeString(currentStateClassName)
-            try {
-                dest.writeValue(currentStateParams)
-            } catch (e: Exception) {
-                dest.writeValue(null)
-            }
-
             dest.writeString(preStateClassName)
-            try {
-                dest.writeValue(preStateParams)
-            } catch (e: Exception) {
-                dest.writeValue(null)
-            }
         }
 
         companion object CREATOR : Parcelable.ClassLoaderCreator<SavedState> {

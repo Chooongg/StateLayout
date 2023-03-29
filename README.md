@@ -19,6 +19,6 @@ On your module's `build.gradle` file add this implementation statement to the `d
 
 ```groovy
 dependencies {
-    implementation 'com.chooongg.widget:statelayout:0.0.2'
+    implementation 'com.chooongg.widget:statelayout:1.0.1'
 }
 ```
