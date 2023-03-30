@@ -52,7 +52,7 @@
                 android:id="@+id/btnChildView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/param_usage" />
+                android:text="@string/child_view_usage" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

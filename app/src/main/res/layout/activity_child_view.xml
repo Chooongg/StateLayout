@@ -83,14 +83,30 @@
         </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/fab_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
-            android:text="Content"
+            android:text="Always Show"
             app:icon="@drawable/ic_logo"
             app:layout_visibilityStrategy="always" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="16dp"
+            android:text="Other Show"
+            app:icon="@drawable/ic_logo"
+            app:layout_visibilityStrategy="other" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="OtherIgnoreContent Show"
+            app:icon="@drawable/ic_logo"
+            app:layout_visibilityStrategy="otherIgnoreContent" />
 
     </com.chooongg.widget.stateLayout.StateLayout>
 
