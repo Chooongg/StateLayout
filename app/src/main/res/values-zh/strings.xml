@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">状态布局</string>
+
+    <string name="basic_usage">普通使用</string>
+    <string name="param_usage">参数使用</string>
+    <string name="child_view_usage">子视图使用</string>
+
+    <string name="enable_animate">启用动画</string>
+
+    <string name="explain_basic">StateLayout的基本使用方法，只需要告知StateLayout需要切换的状态即可。</string>
+    <string name="explain_param">StateLayout支持自定义参数，但自定义参数无法在onSaveInstanceState中存储。</string>
+    <string name="explain_child_view">StateLayout中的ChildView可以设置可见性策略，默认为内容。</string>
+
+    <string name="message_empty">数据为空</string>
+    <string name="message_network">网络连接异常</string>
+    <string name="message_error">出现错误</string>
+    <string name="message_custom">这是一个自定义消息</string>
 </resources>

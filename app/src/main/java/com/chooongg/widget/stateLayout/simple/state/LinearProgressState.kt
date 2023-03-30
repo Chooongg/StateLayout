@@ -17,7 +17,7 @@ class LinearProgressState(context: Context) : AbstractState(context) {
 
     override fun isMeanwhileContent(): Boolean = true
 
-    override fun onChangeParams(params: Any?) {
+    override fun onChangeParam(params: Any?) {
         if (params is Number) {
             indicator.isIndeterminate = false
             indicator.setProgress(params.toInt(), true)

@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">StateLayout</string>
+
+    <string name="basic_usage">Normal Usage</string>
+    <string name="param_usage">Param Usage</string>
+    <string name="child_view_usage">Child View Usage</string>
+
+    <string name="enable_animate">EnableAnimate</string>
+
+    <string name="explain_basic">The basic method for using StateLayout is simply to inform the StateLayout of the state that need to be switched.</string>
+    <string name="explain_param">StateLayout supports custom parameters, but custom parameters cannot be stored in the onSaveInstanceState.</string>
+    <string name="explain_child_view">The ChildView in the StateLayout can set visibilityStrategy, which default to content.</string>
+
+
+    <string name="message_empty">data is empty</string>
+    <string name="message_network">abnormal network connection</string>
+    <string name="message_error">an error occurred</string>
+    <string name="message_custom">this is a custom message</string>
 </resources>

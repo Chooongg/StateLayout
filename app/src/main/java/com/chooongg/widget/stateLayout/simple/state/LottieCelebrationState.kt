@@ -36,6 +36,7 @@ class LottieCelebrationState(context: Context) : AbstractState(context) {
             override fun onAnimationRepeat(animation: Animator) {}
             override fun onAnimationCancel(animation: Animator) {}
             override fun onAnimationEnd(animation: Animator) {
+                // 调用父类的隐藏当前状态方法
                 hideCurrentState()
             }
         })
@@ -46,7 +47,7 @@ class LottieCelebrationState(context: Context) : AbstractState(context) {
         animationView.playAnimation()
     }
 
-    override fun onChangeParams(params: Any?) {}
+    override fun onChangeParam(params: Any?) {}
 
     override fun getRetryEventView(): View? = null
 

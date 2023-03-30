@@ -41,77 +41,64 @@
                 app:divider="@drawable/divider_16dp"
                 app:showDividers="beginning|middle|end">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/explain_param"
+                    android:textAppearance="?textAppearanceBodyLarge" />
+
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/switchAnimate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="8dp"
-                    android:text="animate" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnProgressState"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="ProgressState" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnProgressStateProgress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="ProgressState(progress)" />
+                    android:text="@string/enable_animate" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnLinearProgressState"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="LinearProgressState" />
+                    android:text="LinearProgressState(Int)" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnLinearProgressStateProgress"
+                    android:id="@+id/btnLinearProgressState2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="LinearProgressState(progress)" />
+                    android:text="LinearProgressState(Int)" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnLottieLoadingState"
+                    android:id="@+id/btnLinearProgressState3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="LottieLoadingState" />
+                    android:text="LinearProgressState(Int)" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnLottieCelebrationState"
+                    android:id="@+id/btnTextState"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="LottieCelebrationState" />
+                    android:text="TextState(Any)" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEmptyState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="EmptyState(String)" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNetworkState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="NetworkState(String)" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnErrorState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ErrorState(String)" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.core.widget.NestedScrollView>
-
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="other"
-            app:layout_visibilityStrategy="other" />
-
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_margin="16dp"
-            android:text="otherIgnoreContent"
-            app:layout_visibilityStrategy="otherIgnoreContent" />
-
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/fab_always"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="16dp"
-            android:text="always state"
-            app:icon="@android:drawable/ic_media_play"
-            app:layout_visibilityStrategy="always" />
 
     </com.chooongg.widget.stateLayout.StateLayout>
 

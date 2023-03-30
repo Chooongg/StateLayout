@@ -6,9 +6,9 @@ import kotlin.reflect.KClass
 /**
  * 状态改变监听
  */
-fun interface OnStatedChangeListener {
+fun interface OnStateChangedListener {
     /**
      * 状态改变
      */
-    fun onStatedChange(state: KClass<out AbstractState>)
+    fun onStateChanged(state: KClass<out AbstractState>)
 }

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:subtitleTextAppearance="?textAppearanceCaption" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.chooongg.widget.stateLayout.StateLayout
+        android:id="@+id/stateLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingStart="32dp"
+                android:paddingTop="48dp"
+                android:paddingEnd="32dp"
+                android:paddingBottom="48dp"
+                app:divider="@drawable/divider_16dp"
+                app:showDividers="beginning|middle|end">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/explain_basic"
+                    android:textAppearance="?textAppearanceBodyLarge" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchAnimate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="8dp"
+                    android:text="@string/enable_animate" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnProgressState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ProgressState" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLinearProgressState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="LinearProgressState" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTextState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="TextState" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEmptyState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="EmptyState" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNetworkState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="NetworkState" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnErrorState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ErrorState" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLottieLoadingState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="LottieLoadingState" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLottieCelebrationState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="LottieCelebrationState" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </com.chooongg.widget.stateLayout.StateLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

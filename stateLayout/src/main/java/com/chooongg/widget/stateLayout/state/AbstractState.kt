@@ -14,9 +14,9 @@ abstract class AbstractState constructor(context: Context) : FrameLayout(context
 
     open fun isMeanwhileContent(): Boolean = false
 
-    open fun onChangeParams(params: Any?) {}
+    open fun onChangeParam(params: Any?) {}
 
-    open fun getRetryEventView(): View? = null
+    open fun getRetryEventView(): View? = this
 
     open fun generateLayoutParams(): StateLayout.LayoutParams = StateLayout.LayoutParams(
         StateLayout.LayoutParams.WRAP_CONTENT,

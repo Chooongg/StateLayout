@@ -15,7 +15,7 @@ class ProgressState(context: Context) : AbstractState(context) {
         addView(indicator)
     }
 
-    override fun onChangeParams(params: Any?) {
+    override fun onChangeParam(params: Any?) {
         if (params is Number) {
             indicator.isIndeterminate = false
             indicator.setProgress(params.toInt(), true)

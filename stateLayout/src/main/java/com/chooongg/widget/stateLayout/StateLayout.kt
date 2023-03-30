@@ -33,9 +33,19 @@ open class StateLayout @JvmOverloads constructor(
         private set
 
     /**
+     * 当前状态的参数
+     */
+    private var currentStateParam: Any? = null
+
+    /**
      * 上一个状态
      */
     private var preState: KClass<out AbstractState> = ContentState::class
+
+    /**
+     * 上一个状态的参数
+     */
+    private var preStateParam: Any? = null
 
     /**
      * 是否启用动画
@@ -55,7 +65,7 @@ open class StateLayout @JvmOverloads constructor(
     /**
      * 状态变化监听
      */
-    private var onStatedChangeListener: OnStatedChangeListener? = null
+    private var onStateChangedListener: OnStateChangedListener? = null
 
     init {
         val a = context.obtainStyledAttributes(
@@ -76,18 +86,18 @@ open class StateLayout @JvmOverloads constructor(
     /**
      * show state
      */
-    fun show(stateClass: KClass<out AbstractState>, params: Any? = null) {
-        post { showInternal(stateClass, params, isEnableAnimate) }
+    fun show(stateClass: KClass<out AbstractState>, param: Any? = null) {
+        post { showInternal(stateClass, param, isEnableAnimate) }
     }
 
     /**
      * show status internal implementation
      */
     private fun showInternal(
-        stateClass: KClass<out AbstractState>, params: Any? = null, isAnimate: Boolean
+        stateClass: KClass<out AbstractState>, param: Any? = null, isAnimate: Boolean
     ) {
         if (stateClass == currentState) {
-            forEach { if (it::class == stateClass) (it as AbstractState).onChangeParams(params) }
+            forEach { if (it::class == stateClass) (it as AbstractState).onChangeParam(param) }
             return
         }
         val isHasState = children.find { it::class == stateClass }
@@ -97,16 +107,18 @@ open class StateLayout @JvmOverloads constructor(
                 showContentState(it, isAnimate)
                 hideOtherState(it, isAnimate)
             } else {
-                showOtherState(it, stateClass, params, isAnimate)
+                showOtherState(it, stateClass, param, isAnimate)
             }
         }
         preState = currentState
+        preStateParam = currentStateParam
         currentState = stateClass
-        onStatedChangeListener?.onStatedChange(currentState)
+        currentStateParam = param
+        onStateChangedListener?.onStateChanged(currentState)
     }
 
-    internal fun showPrevious(params: Any? = null) {
-        showInternal(preState, params, isEnableAnimate)
+    internal fun showPrevious(param: Any? = preStateParam) {
+        showInternal(preState, param, isEnableAnimate)
     }
 
     private fun showContentState(view: View, isAnimate: Boolean) {
@@ -186,11 +198,11 @@ open class StateLayout @JvmOverloads constructor(
     }
 
     private fun showOtherState(
-        view: View, stateClass: KClass<out AbstractState>, params: Any?, isAnimate: Boolean
+        view: View, stateClass: KClass<out AbstractState>, param: Any?, isAnimate: Boolean
     ) {
         if (view::class == stateClass) {
             val stateView = (view as AbstractState)
-            stateView.onChangeParams(params)
+            stateView.onChangeParam(param)
             if (isAnimate && stateView.isShowAnimate() && canUseAnimate()) {
                 if (stateView.visibility != View.VISIBLE) animate.createAnimate(stateView)
                 animate.showAnimate(stateView) { stateView.visibility = View.VISIBLE }
@@ -242,14 +254,14 @@ open class StateLayout @JvmOverloads constructor(
      * 设置状态变化监听
      */
     fun setOnStatedChangeListener(block: ((currentState: KClass<out AbstractState>) -> Unit)) {
-        onStatedChangeListener = OnStatedChangeListener(block)
+        onStateChangedListener = OnStateChangedListener(block)
     }
 
     /**
      * 设置状态变化监听
      */
-    fun setOnStatedChangeListener(listener: OnStatedChangeListener?) {
-        onStatedChangeListener = listener
+    fun setOnStatedChangeListener(listener: OnStateChangedListener?) {
+        onStateChangedListener = listener
     }
 
     @Suppress("unused")
@@ -273,14 +285,14 @@ open class StateLayout @JvmOverloads constructor(
         }
         super.onRestoreInstanceState(state.superState)
         if (state.currentStateClassName != null) {
-            val temp = onStatedChangeListener
-            onStatedChangeListener = null
+            val temp = onStateChangedListener
+            onStateChangedListener = null
             showInternal(
                 Class.forName(state.currentStateClassName!!).kotlin as KClass<out AbstractState>,
                 null,
                 false
             )
-            onStatedChangeListener = temp
+            onStateChangedListener = temp
         }
         if (state.preStateClassName != null) {
             preState = Class.forName(state.preStateClassName!!).kotlin as KClass<out AbstractState>
