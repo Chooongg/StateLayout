@@ -15,7 +15,7 @@
 
 <div align=center>
     <figure>
-        <img src="Screenshots/1.gif" width="288" height="640"/><img src="Screenshots/2.gif" width="288" height="640"/><img src="Screenshots/3.gif" width="288" height="640"/>
+        <img src="Screenshots/1.gif" width="288" height="640"/> <img src="Screenshots/2.gif" width="288" height="640"/> <img src="Screenshots/3.gif" width="288" height="640"/>
     </figure>
 </div>
 
