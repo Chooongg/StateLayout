@@ -13,6 +13,8 @@
 
 ## Screenshot
 
+![Demo](Screenshots/1.gif)![Demo](Screenshots/2.gif)![Demo](Screenshots/3.gif)
+
 <div align=center>
     <figure>
         <img src="Screenshots/1.gif"/><img src="Screenshots/2.gif"/><img src="Screenshots/3.gif"/>
