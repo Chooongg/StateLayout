@@ -19,6 +19,9 @@
     </figure>
 </div>
 
+## Characteristics
+- 
+
 ## Setup 
 
 #### Gradle
