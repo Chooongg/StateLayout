@@ -8,9 +8,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import com.chooongg.widget.stateLayout.OnStateChangedListener
-import com.chooongg.widget.stateLayout.simple.databinding.ActivityBasicBinding
 import com.chooongg.widget.stateLayout.simple.databinding.ActivityChildViewBinding
-import com.chooongg.widget.stateLayout.simple.state.*
+import com.chooongg.widget.stateLayout.simple.state.LinearProgressState
+import com.chooongg.widget.stateLayout.simple.state.LottieCelebrationState
+import com.chooongg.widget.stateLayout.simple.state.LottieLoadingState
+import com.chooongg.widget.stateLayout.simple.state.ProgressState
 import com.chooongg.widget.stateLayout.state.AbstractState
 import kotlin.reflect.KClass
 
@@ -47,6 +49,12 @@ class ChildViewActivity : AppCompatActivity(), OnStateChangedListener {
         }
         binding.btnLinearProgressState.setOnClickListener {
             binding.stateLayout.show(LinearProgressState::class)
+        }
+        binding.btnLottieLoadingState.setOnClickListener {
+            binding.stateLayout.show(LottieLoadingState::class)
+        }
+        binding.btnLottieCelebrationState.setOnClickListener {
+            binding.stateLayout.show(LottieCelebrationState::class)
         }
     }
 
