@@ -41,7 +41,7 @@ section:
 
 ```groovy
 dependencies {
-    implementation 'com.chooongg.widget:statelayout:1.0.2'
+    implementation "com.chooongg.widget:statelayout:$version"
 }
 ```
 
