@@ -37,29 +37,66 @@
             app:divider="@drawable/divider_16dp"
             app:showDividers="beginning|middle|end">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnNormal"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/basic_usage" />
+                android:text="@string/explain_basic"
+                android:textAppearance="?textAppearanceBodyLarge" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switchAnimate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                android:text="@string/enable_animate" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnParam"
+                android:id="@+id/btnProgressState"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/param_usage" />
+                android:text="ProgressState" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnChildView"
+                android:id="@+id/btnLinearProgressState"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/child_view_usage" />
+                android:text="LinearProgressState" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCode"
+                android:id="@+id/btnTextState"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/code_usage" />
+                android:text="TextState" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEmptyState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="EmptyState" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnNetworkState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="NetworkState" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnErrorState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ErrorState" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLottieLoadingState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="LottieLoadingState" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLottieCelebrationState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="LottieCelebrationState" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

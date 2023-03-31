@@ -35,5 +35,8 @@ class MainActivity : AppCompatActivity() {
         binding.btnChildView.setOnClickListener {
             startActivity(Intent(this, ChildViewActivity::class.java))
         }
+        binding.btnCode.setOnClickListener {
+            startActivity(Intent(this, CodeActivity::class.java))
+        }
     }
 }

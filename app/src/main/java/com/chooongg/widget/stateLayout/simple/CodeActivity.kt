@@ -8,14 +8,17 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import com.chooongg.widget.stateLayout.OnStateChangedListener
-import com.chooongg.widget.stateLayout.simple.databinding.ActivityBasicBinding
+import com.chooongg.widget.stateLayout.StateLayout
+import com.chooongg.widget.stateLayout.simple.databinding.ActivityCodeBinding
 import com.chooongg.widget.stateLayout.simple.state.*
 import com.chooongg.widget.stateLayout.state.AbstractState
 import kotlin.reflect.KClass
 
-class BasicActivity : AppCompatActivity(), OnStateChangedListener {
+class CodeActivity : AppCompatActivity(), OnStateChangedListener {
 
-    private val binding by lazy { ActivityBasicBinding.inflate(layoutInflater) }
+    private val binding by lazy { ActivityCodeBinding.inflate(layoutInflater) }
+    private val activityStateLayout by lazy { StateLayout.attach(this) }
+    private val stateLayout by lazy { StateLayout.attach(binding.nestedScrollView) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,43 +33,42 @@ class BasicActivity : AppCompatActivity(), OnStateChangedListener {
         supportActionBar?.let {
             it.setHomeButtonEnabled(true)
             it.setDisplayHomeAsUpEnabled(true)
-            it.subtitle = binding.stateLayout.currentState.simpleName
+            it.subtitle = stateLayout.currentState.simpleName
         }
-        binding.stateLayout.setOnStateChangedListener(this)
-//        binding.stateLayout.bindAppBarLayoutLiftOnScroll(
-//            binding.appBarLayout, binding.nestedScrollView.id
-//        )
-        binding.switchAnimate.isChecked = binding.stateLayout.isEnableAnimate
+        stateLayout.setOnStateChangedListener(this)
+        stateLayout.bindAppBarLayoutLiftOnScroll(binding.appBarLayout, binding.nestedScrollView.id)
+        binding.switchAnimate.isChecked = stateLayout.isEnableAnimate
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
+        activityStateLayout.show(LinearProgressState::class)
         binding.switchAnimate.setOnCheckedChangeListener { _, isChecked ->
-            binding.stateLayout.isEnableAnimate = isChecked
+            stateLayout.isEnableAnimate = isChecked
         }
         binding.btnProgressState.setOnClickListener {
-            binding.stateLayout.show(ProgressState::class)
+            stateLayout.show(ProgressState::class)
         }
         binding.btnLinearProgressState.setOnClickListener {
-            binding.stateLayout.show(LinearProgressState::class)
+            stateLayout.show(LinearProgressState::class)
         }
         binding.btnTextState.setOnClickListener {
-            binding.stateLayout.show(TextState::class)
+            stateLayout.show(TextState::class)
         }
         binding.btnEmptyState.setOnClickListener {
-            binding.stateLayout.show(EmptyState::class)
+            stateLayout.show(EmptyState::class)
         }
         binding.btnNetworkState.setOnClickListener {
-            binding.stateLayout.show(NetworkState::class)
+            stateLayout.show(NetworkState::class)
         }
         binding.btnErrorState.setOnClickListener {
-            binding.stateLayout.show(ErrorState::class)
+            stateLayout.show(ErrorState::class)
         }
         binding.btnLottieLoadingState.setOnClickListener {
-            binding.stateLayout.show(LottieLoadingState::class)
+            stateLayout.show(LottieLoadingState::class)
         }
         binding.btnLottieCelebrationState.setOnClickListener {
-            binding.stateLayout.show(LottieCelebrationState::class)
+            stateLayout.show(LottieCelebrationState::class)
         }
     }
 
@@ -77,7 +79,7 @@ class BasicActivity : AppCompatActivity(), OnStateChangedListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.contentState) {
-            binding.stateLayout.showContent()
+            stateLayout.showContent()
             return true
         } else if (item.itemId == android.R.id.home) {
             onBackPressed()

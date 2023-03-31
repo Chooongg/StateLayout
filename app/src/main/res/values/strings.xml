@@ -4,6 +4,7 @@
     <string name="basic_usage">Normal Usage</string>
     <string name="param_usage">Param Usage</string>
     <string name="child_view_usage">Child View Usage</string>
+    <string name="code_usage">Attach in code</string>
 
     <string name="enable_animate">EnableAnimate</string>
 

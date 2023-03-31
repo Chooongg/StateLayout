@@ -10,5 +10,5 @@ fun interface OnStateChangedListener {
     /**
      * 状态改变
      */
-    fun onStateChanged(state: KClass<out AbstractState>)
+    fun onStateChanged(state: KClass<out AbstractState>, contentIsShow: Boolean)
 }

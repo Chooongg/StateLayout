@@ -32,7 +32,10 @@ class ParamActivity : AppCompatActivity(), OnStateChangedListener {
             it.setDisplayHomeAsUpEnabled(true)
             it.subtitle = binding.stateLayout.currentState.simpleName
         }
-        binding.stateLayout.setOnStatedChangeListener(this)
+        binding.stateLayout.setOnStateChangedListener(this)
+        binding.stateLayout.bindAppBarLayoutLiftOnScroll(
+            binding.appBarLayout, binding.nestedScrollView.id
+        )
         binding.switchAnimate.isChecked = binding.stateLayout.isEnableAnimate
     }
 
@@ -80,7 +83,7 @@ class ParamActivity : AppCompatActivity(), OnStateChangedListener {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onStateChanged(state: KClass<out AbstractState>) {
+    override fun onStateChanged(state: KClass<out AbstractState>, contentIsShow: Boolean) {
         supportActionBar?.subtitle = state.simpleName
     }
 }

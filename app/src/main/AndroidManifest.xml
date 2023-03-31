@@ -34,6 +34,10 @@
             android:name="com.chooongg.widget.stateLayout.simple.ChildViewActivity"
             android:label="@string/child_view_usage"
             android:logo="@drawable/ic_logo" />
+        <activity
+            android:name="com.chooongg.widget.stateLayout.simple.CodeActivity"
+            android:label="@string/code_usage"
+            android:logo="@drawable/ic_logo" />
     </application>
 
 </manifest>

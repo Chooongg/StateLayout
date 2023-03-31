@@ -2,6 +2,7 @@ package com.chooongg.widget.stateLayout.simple.state
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.updateLayoutParams
 import com.chooongg.widget.stateLayout.StateLayout
@@ -29,6 +30,8 @@ class ErrorState(context: Context) : AbstractState(context) {
     override fun onChangeParam(params: Any?) {
         binding.tvMessage.text = params?.toString() ?: context.getString(R.string.message_error)
     }
+
+    override fun getRetryEventView() = parent as? View
 
     override fun generateLayoutParams() = StateLayout.LayoutParams(
         StateLayout.LayoutParams.MATCH_PARENT,

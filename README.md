@@ -8,8 +8,10 @@
 </div>
 
 # StateLayout
+
 - built on 2022.1.1 Patch 2 with AndroidX.
-- Please read also [issues](https://github.com/Chooongg/StateLayout/issues) and [releases](https://github.com/Chooongg/StateLayout/releases).
+- Please read also [issues](https://github.com/Chooongg/StateLayout/issues)
+  and [releases](https://github.com/Chooongg/StateLayout/releases).
 
 ## Screenshot
 
@@ -20,16 +22,107 @@
 </div>
 
 ## Characteristics
-- 
 
-## Setup 
+- fully customizable states
+- support for custom parameters
+- support for animation
+- fully customizable animation
+- support for child view visibility strategy
+- support for AppBarLayout Lift
+
+## Setup
 
 #### Gradle
 
-On your module's `build.gradle` file add this implementation statement to the `dependencies` section:
+On your module's `build.gradle` file add this implementation statement to the `dependencies`
+section:
 
 ```groovy
 dependencies {
     implementation 'com.chooongg.widget:statelayout:1.0.2'
 }
+```
+
+## How to use
+
+#### 1. Used in layout XML
+
+adding a state layout to layout xml
+
+```xml
+
+<com.chooongg.widget.stateLayout.StateLayout 
+    android:id="@+id/stateLayout"
+    android:layout_width="match_parent" 
+    android:layout_height="match_parent">
+    <!-- ChildView -->
+    <!-- ChildView -->
+    <!-- ChildView -->
+</com.chooongg.widget.stateLayout.StateLayout>
+```
+
+ChildView supports configuring the visibilityStrategy attribute, which is used to control the display and hide policies during state switching
+
+```xml
+
+<com.chooongg.widget.stateLayout.StateLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" 
+    android:layout_height="match_parent">
+        <!-- show when the state is ContentState, default -->
+        <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_visibilityStrategy="content"/>
+        <!-- show as long as the status is non ContentState -->
+        <View
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          app:layout_visibilityStrategy="other"/>
+        <!-- show as long as the ContentState exists -->
+        <View
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          app:layout_visibilityStrategy="otherIgnoreContent"/>
+        <!-- always show regardless of any status -->
+        <View
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          app:layout_visibilityStrategy="always"/>
+</com.chooongg.widget.stateLayout.StateLayout>
+```
+
+switchLayout method can be used to switch the state of the layout
+
+```kotlin
+// show ProgressState
+stateLayout.show(ProgressState::class)
+// show Content
+stateLayout.ShowContent()
+```
+
+set the on retry event listener
+
+```kotlin
+stateLayout.setOnRetryEventListener { currentState: KClass<out AbstractState> ->
+    // do something
+}
+```
+
+set the on state changed listener
+
+```kotlin
+stateLayout.setOnStateChangedListener { currentState: KClass<out AbstractState> ->
+    // do something
+}
+```
+
+#### 2. Used in code
+
+```kotlin
+// 绑定Activity
+val stateLayout = StateLayout.attach(activity)
+// 绑定Fragment
+val stateLayout = StateLayout.attach(fragment)
+// 绑定View
+val stateLayout = StateLayout.attach(view)
 ```

@@ -5,6 +5,7 @@
     <string name="basic_usage">普通使用</string>
     <string name="param_usage">参数使用</string>
     <string name="child_view_usage">子视图使用</string>
+    <string name="code_usage">在代码中绑定</string>
 
     <string name="enable_animate">启用动画</string>
 

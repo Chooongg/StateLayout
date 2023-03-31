@@ -49,7 +49,7 @@ class LottieCelebrationState(context: Context) : AbstractState(context) {
 
     override fun onChangeParam(params: Any?) {}
 
-    override fun getRetryEventView(): View? = null
+    override fun getRetryEventView(): View? = parent as? View
 
     override fun generateLayoutParams(): StateLayout.LayoutParams {
         return StateLayout.LayoutParams(-1, -1)

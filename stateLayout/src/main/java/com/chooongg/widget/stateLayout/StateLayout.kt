@@ -1,5 +1,6 @@
 package com.chooongg.widget.stateLayout
 
+import android.app.Activity
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
@@ -8,13 +9,17 @@ import android.view.AbsSavedState
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.annotation.IdRes
 import androidx.annotation.IntDef
 import androidx.core.view.children
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import com.chooongg.widget.stateLayout.animate.StateAnimate
 import com.chooongg.widget.stateLayout.state.AbstractState
 import com.chooongg.widget.stateLayout.state.ContentState
+import com.google.android.material.appbar.AppBarLayout
+import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
 open class StateLayout @JvmOverloads constructor(
@@ -67,6 +72,10 @@ open class StateLayout @JvmOverloads constructor(
      */
     private var onStateChangedListener: OnStateChangedListener? = null
 
+    private var appBarLayout: WeakReference<AppBarLayout>? = null
+
+    private var liftOnScrollTargetViewId: Int = 0
+
     init {
         val a = context.obtainStyledAttributes(
             attrs, R.styleable.StateLayout, defStyleAttr, defStyleRes
@@ -100,8 +109,9 @@ open class StateLayout @JvmOverloads constructor(
             forEach { if (it::class == stateClass) (it as AbstractState).onChangeParam(param) }
             return
         }
-        val isHasState = children.find { it::class == stateClass }
-        if (isHasState == null && stateClass != ContentState::class) createOtherState(stateClass)
+        setOnClickListener(null)
+        val stateIsHas = children.find { it::class == stateClass }
+        if (stateIsHas == null && stateClass != ContentState::class) createOtherState(stateClass)
         forEach {
             if (stateClass == ContentState::class) {
                 showContentState(it, isAnimate)
@@ -114,7 +124,19 @@ open class StateLayout @JvmOverloads constructor(
         preStateParam = currentStateParam
         currentState = stateClass
         currentStateParam = param
-        onStateChangedListener?.onStateChanged(currentState)
+
+        if (currentState == ContentState::class) {
+            setAppBarLayoutTargetView(true)
+            onStateChangedListener?.onStateChanged(ContentState::class, true)
+        } else {
+            val state = children.find { it::class == currentState && it is AbstractState }
+            if (state != null) {
+                setAppBarLayoutTargetView((state as AbstractState).isMeanwhileContent())
+                onStateChangedListener?.onStateChanged(
+                    ContentState::class, state.isMeanwhileContent()
+                )
+            } else setAppBarLayoutTargetView(false)
+        }
     }
 
     internal fun showPrevious(param: Any? = preStateParam) {
@@ -188,13 +210,14 @@ open class StateLayout @JvmOverloads constructor(
         }
     }
 
-    private fun createOtherState(stateClass: KClass<out AbstractState>) {
+    private fun createOtherState(stateClass: KClass<out AbstractState>): AbstractState {
         val constructor = stateClass.java.getConstructor(Context::class.java)
         val state = constructor.newInstance(context)
         addView(state, state.generateLayoutParams())
         state.getRetryEventView()?.setOnClickListener {
             if (isEnabled) onRetryEventListener?.onStateRetry(stateClass)
         }
+        return state
     }
 
     private fun showOtherState(
@@ -253,15 +276,36 @@ open class StateLayout @JvmOverloads constructor(
     /**
      * 设置状态变化监听
      */
-    fun setOnStatedChangeListener(block: ((currentState: KClass<out AbstractState>) -> Unit)) {
+    fun setOnStateChangedListener(block: ((currentState: KClass<out AbstractState>, contentIsShow: Boolean) -> Unit)) {
         onStateChangedListener = OnStateChangedListener(block)
     }
 
     /**
      * 设置状态变化监听
      */
-    fun setOnStatedChangeListener(listener: OnStateChangedListener?) {
+    fun setOnStateChangedListener(listener: OnStateChangedListener?) {
         onStateChangedListener = listener
+    }
+
+    fun bindAppBarLayoutLiftOnScroll(appBarLayout: AppBarLayout, @IdRes targetViewId: Int) {
+        this.appBarLayout = WeakReference(appBarLayout)
+        liftOnScrollTargetViewId = targetViewId
+        if (currentState == ContentState::class) {
+            setAppBarLayoutTargetView(true)
+        } else {
+            val state = children.find { it::class == currentState && it is AbstractState }
+            if (state != null) {
+                setAppBarLayoutTargetView((state as AbstractState).isMeanwhileContent())
+            } else setAppBarLayoutTargetView(false)
+        }
+    }
+
+    private fun setAppBarLayoutTargetView(isTargetViewId: Boolean) {
+        appBarLayout?.get()?.let {
+            if (isTargetViewId && liftOnScrollTargetViewId != 0) {
+                it.liftOnScrollTargetViewId = liftOnScrollTargetViewId
+            } else it.setLiftOnScrollTargetView(this)
+        }
     }
 
     @Suppress("unused")
@@ -410,5 +454,45 @@ open class StateLayout @JvmOverloads constructor(
                 return arrayOfNulls(size)
             }
         }
+    }
+
+    companion object {
+        fun attach(
+            view: View,
+            beginIsContent: Boolean = false,
+            enableAnimation: Boolean = StateLayoutManager.isEnableAnimation
+        ): StateLayout {
+            val stateLayout = StateLayout(view.context, null, 0, 0, beginIsContent, enableAnimation)
+            if (view.parent == null) {
+                stateLayout.addView(view, LayoutParams(view.layoutParams))
+            } else {
+                val parent = view.parent as ViewGroup
+                val lp = view.layoutParams
+                val index = parent.indexOfChild(view)
+                parent.removeView(view)
+                stateLayout.addView(view, LayoutParams(lp))
+                parent.addView(stateLayout, index, lp)
+            }
+            return stateLayout
+        }
+
+        fun attach(
+            activity: Activity,
+            beginIsContent: Boolean = false,
+            enableAnimation: Boolean = StateLayoutManager.isEnableAnimation
+        ): StateLayout {
+            val contentView = activity.findViewById(android.R.id.content) as ViewGroup
+            return attach(
+                if (contentView.childCount > 0) contentView.getChildAt(0) else contentView,
+                beginIsContent,
+                enableAnimation
+            )
+        }
+
+        fun attach(
+            fragment: Fragment,
+            beginIsContent: Boolean = false,
+            enableAnimation: Boolean = StateLayoutManager.isEnableAnimation
+        ) = attach(fragment.requireView(), beginIsContent, enableAnimation)
     }
 }

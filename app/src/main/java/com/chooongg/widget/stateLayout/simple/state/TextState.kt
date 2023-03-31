@@ -19,7 +19,5 @@ class TextState(context: Context) : AbstractState(context) {
         textView.text = params?.toString() ?: "默认文本"
     }
 
-    override fun getRetryEventView(): View? {
-        return super.getRetryEventView()
-    }
+    override fun getRetryEventView() = parent as? View
 }
