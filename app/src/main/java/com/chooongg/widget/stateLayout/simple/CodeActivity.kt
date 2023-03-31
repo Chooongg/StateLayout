@@ -17,8 +17,8 @@ import kotlin.reflect.KClass
 class CodeActivity : AppCompatActivity(), OnStateChangedListener {
 
     private val binding by lazy { ActivityCodeBinding.inflate(layoutInflater) }
-    private val activityStateLayout by lazy { StateLayout.attach(this) }
-    private val stateLayout by lazy { StateLayout.attach(binding.nestedScrollView) }
+    private val activityStateLayout by lazy { StateLayout.bind(this) }
+    private val stateLayout by lazy { StateLayout.bind(binding.nestedScrollView) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

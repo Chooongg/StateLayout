@@ -457,7 +457,7 @@ open class StateLayout @JvmOverloads constructor(
     }
 
     companion object {
-        fun attach(
+        fun bind(
             view: View,
             beginIsContent: Boolean = false,
             enableAnimation: Boolean = StateLayoutManager.isEnableAnimation
@@ -476,23 +476,23 @@ open class StateLayout @JvmOverloads constructor(
             return stateLayout
         }
 
-        fun attach(
+        fun bind(
             activity: Activity,
             beginIsContent: Boolean = false,
             enableAnimation: Boolean = StateLayoutManager.isEnableAnimation
         ): StateLayout {
             val contentView = activity.findViewById(android.R.id.content) as ViewGroup
-            return attach(
+            return bind(
                 if (contentView.childCount > 0) contentView.getChildAt(0) else contentView,
                 beginIsContent,
                 enableAnimation
             )
         }
 
-        fun attach(
+        fun bind(
             fragment: Fragment,
             beginIsContent: Boolean = false,
             enableAnimation: Boolean = StateLayoutManager.isEnableAnimation
-        ) = attach(fragment.requireView(), beginIsContent, enableAnimation)
+        ) = bind(fragment.requireView(), beginIsContent, enableAnimation)
     }
 }
