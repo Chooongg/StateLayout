@@ -11,6 +11,14 @@
 - built on 2022.1.1 Patch 2 with AndroidX.
 - Please read also [issues](https://github.com/Chooongg/StateLayout/issues) and [releases](https://github.com/Chooongg/StateLayout/releases).
 
+## Screenshot
+
+<div align=center>
+    <figure>
+        <img src="Screenshots/1.gif"/><img src="Screenshots/2.gif"/><img src="Screenshots/3.gif"/>
+    </figure>
+</div>
+
 ## Setup 
 
 #### Gradle
