@@ -126,7 +126,7 @@ val stateLayout = StateLayout.bind(fragment)
 val stateLayout = StateLayout.bind(view)
 ```
 
-## License
+## 许可证
 
 ```
 Copyright (C) 2018 Drake, Inc.
