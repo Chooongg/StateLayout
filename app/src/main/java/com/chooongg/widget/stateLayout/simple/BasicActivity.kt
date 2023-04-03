@@ -33,9 +33,9 @@ class BasicActivity : AppCompatActivity(), OnStateChangedListener {
             it.subtitle = binding.stateLayout.currentState.simpleName
         }
         binding.stateLayout.setOnStateChangedListener(this)
-//        binding.stateLayout.bindAppBarLayoutLiftOnScroll(
-//            binding.appBarLayout, binding.nestedScrollView.id
-//        )
+        binding.stateLayout.bindAppBarLayoutLiftOnScroll(
+            binding.appBarLayout, binding.nestedScrollView.id
+        )
         binding.switchAnimate.isChecked = binding.stateLayout.isEnableAnimate
     }
 

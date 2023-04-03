@@ -9,47 +9,46 @@
 
 # StateLayout
 
-- built on 2022.1.1 Patch 2 with AndroidX.
-- Please read also [issues](https://github.com/Chooongg/StateLayout/issues)
-  and [releases](https://github.com/Chooongg/StateLayout/releases).
+- 基于 2022.1.1 Patch 2 和 AndroidX 构建.
+- 请同时阅读 [issues](https://github.com/Chooongg/StateLayout/issues)
+  和 [releases](https://github.com/Chooongg/StateLayout/releases).
 
-[中文](README_zh.md)
+[ENGLISH](README-en.md)
 
-## Screenshot
+## 截图
 
 <div align=center>
     <figure>
-        <img src="Screenshots/1.gif" width="270" height="600"/> <img src="Screenshots/2.gif" width="270" height="600"/> <img src="Screenshots/3.gif" width="270" height="600"/>
+        <img src="Screenshots/1_zh.gif" width="270" height="600"/> <img src="Screenshots/2_zh.gif" width="270" height="600"/> <img src="Screenshots/3_zh.gif" width="270" height="600"/>
     </figure>
 </div>
 
-## Characteristics
+## 特点
 
-- fully customizable states
-- support for custom parameters
-- support for animation
-- fully customizable animation
-- support for child view visibility strategy
-- support for AppBarLayout Lift
+- 完全可自定义的状态
+- 支持自定义参数
+- 支持动画
+- 完全可自定义的动画
+- 支持子视图的可见性策略
+- 对 AppBarLayout Lift 的支持
 
-## Setup
+## 安装
 
 #### Gradle
 
-On your module's `build.gradle` file add this implementation statement to the `dependencies`
-section:
+在模块的 “build.gradle” 文件中，将此实现语句添加到 “dependencies” 部分:
 
 ```groovy
 dependencies {
-    implementation "com.chooongg.widget:statelayout:$version"
+  implementation "com.chooongg.widget:statelayout:$version"
 }
 ```
 
-## How to use
+## 如何使用
 
-#### 1. Used in layout XML
+#### 1. 用于布局XML
 
-adding a state layout to layout xml
+将 StateLayout 添加到布局 XML
 
 ```xml
 
@@ -63,7 +62,7 @@ adding a state layout to layout xml
 </com.chooongg.widget.stateLayout.StateLayout>
 ```
 
-ChildView supports configuring the visibilityStrategy attribute, which is used to control the display and hide policies during state switching
+ChildView支持配置visibilityStrategy属性，该属性用于控制状态切换期间的显示和隐藏策略
 
 ```xml
 
@@ -93,7 +92,7 @@ ChildView supports configuring the visibilityStrategy attribute, which is used t
 </com.chooongg.widget.stateLayout.StateLayout>
 ```
 
-The show method can be used to switch the state of StateLayout
+show 方法可用于切换 StateLayout 的状态
 
 ```kotlin
 // show ProgressState
@@ -102,7 +101,7 @@ stateLayout.show(ProgressState::class)
 stateLayout.ShowContent()
 ```
 
-set the on retry event listener
+设置点击重试事件的侦听器
 
 ```kotlin
 stateLayout.setOnRetryEventListener { currentState: KClass<out AbstractState> ->
@@ -110,7 +109,7 @@ stateLayout.setOnRetryEventListener { currentState: KClass<out AbstractState> ->
 }
 ```
 
-set the on state changed listener
+设置状态更改的侦听器
 
 ```kotlin
 stateLayout.setOnStateChangedListener { currentState: KClass<out AbstractState> ->
@@ -118,18 +117,18 @@ stateLayout.setOnStateChangedListener { currentState: KClass<out AbstractState> 
 }
 ```
 
-#### 2. Used in code
+#### 2. 在代码中使用
 
 ```kotlin
-// bind Activity
+// 绑定 Activity
 val stateLayout = StateLayout.bind(activity)
-// bind Fragment
+// 绑定 Fragment
 val stateLayout = StateLayout.bind(fragment)
-// bind View
+// 绑定 View
 val stateLayout = StateLayout.bind(view)
 ```
 
-## License
+## 许可证
 
 ```
 Copyright (C) 2023 Drake, Inc.

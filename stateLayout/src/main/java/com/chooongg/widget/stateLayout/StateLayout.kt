@@ -129,13 +129,19 @@ open class StateLayout @JvmOverloads constructor(
             setAppBarLayoutTargetView(true)
             onStateChangedListener?.onStateChanged(ContentState::class, true)
         } else {
-            val state = children.find { it::class == currentState && it is AbstractState }
-            if (state != null) {
-                setAppBarLayoutTargetView((state as AbstractState).isMeanwhileContent())
+            val childView = children.find { it::class == currentState && it is AbstractState }
+            if (childView != null) {
+                val state = childView as AbstractState
+                setAppBarLayoutTargetView(state.isMeanwhileContent())
                 onStateChangedListener?.onStateChanged(
-                    ContentState::class, state.isMeanwhileContent()
+                    state::class, childView.isMeanwhileContent()
                 )
-            } else setAppBarLayoutTargetView(false)
+            } else {
+                setAppBarLayoutTargetView(true)
+                onStateChangedListener?.onStateChanged(
+                    ContentState::class, true
+                )
+            }
         }
     }
 
