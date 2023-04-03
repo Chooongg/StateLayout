@@ -19,7 +19,7 @@
 
 <div align=center>
     <figure>
-        <img src="Screenshots/1.gif" width="270" height="600"/> <img src="Screenshots/2.gif" width="270" height="600"/> <img src="Screenshots/3.gif" width="270" height="600"/>
+        <img src="Screenshots/1-en.gif" width="270" height="600"/> <img src="Screenshots/2-en.gif" width="270" height="600"/> <img src="Screenshots/3-en.gif" width="270" height="600"/>
     </figure>
 </div>
 
