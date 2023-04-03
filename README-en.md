@@ -129,6 +129,12 @@ val stateLayout = StateLayout.bind(fragment)
 val stateLayout = StateLayout.bind(view)
 ```
 
+## R8 / ProGuard
+
+If you are using R8 the shrinking and obfuscation rules are included automatically.
+
+ProGuard users must manually add the options from[[stateLayout.pro](stateLayout/stateLayout.pro)].
+
 ## License
 
 ```

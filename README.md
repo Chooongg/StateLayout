@@ -128,6 +128,12 @@ val stateLayout = StateLayout.bind(fragment)
 val stateLayout = StateLayout.bind(view)
 ```
 
+## R8 / 混淆
+
+如果您正在使用R8，则会自动包含压缩和混淆规则。 
+
+ProGuard 用户必须手动添加中的选项[[stateLayout.pro](stateLayout/stateLayout.pro)].
+
 ## 许可证
 
 ```
