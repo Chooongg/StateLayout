@@ -13,7 +13,7 @@
 - 请同时阅读 [issues](https://github.com/Chooongg/StateLayout/issues)
   和 [releases](https://github.com/Chooongg/StateLayout/releases).
 
-[ENGLISH](README-en.md)
+[ [ENGLISH](README-en.md) ]
 
 ## 截图
 
