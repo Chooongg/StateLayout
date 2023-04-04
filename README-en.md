@@ -25,12 +25,15 @@
 
 ## Characteristics
 
+- good scalability
+- using the class as the status code
 - fully customizable states
 - support for custom parameters
 - support for animation
 - fully customizable animation
 - support for child view visibility strategy
 - support for AppBarLayout Lift
+- low coupling
 
 ## Setup
 
