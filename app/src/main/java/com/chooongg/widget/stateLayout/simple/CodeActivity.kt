@@ -82,7 +82,7 @@ class CodeActivity : AppCompatActivity(), OnStateChangedListener {
             stateLayout.showContent()
             return true
         } else if (item.itemId == android.R.id.home) {
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
             return true
         }
         return super.onOptionsItemSelected(item)

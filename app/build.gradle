@@ -37,9 +37,9 @@ android {
 
 dependencies {
     implementation project(path: ':stateLayout')
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.7.0-alpha02'
-    implementation 'com.google.android.material:material:1.9.0-beta01'
+    implementation 'androidx.core:core-ktx:1.10.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.0-alpha09'
     implementation 'com.airbnb.android:lottie:6.0.0'
 }
