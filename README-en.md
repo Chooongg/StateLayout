@@ -136,7 +136,7 @@ val stateLayout = StateLayout.bind(view)
 
 If you are using R8 the shrinking and obfuscation rules are included automatically.
 
-ProGuard users must manually add the options from[[stateLayout.pro](stateLayout/stateLayout.pro)].
+ProGuard users must manually add the options from[[consumer-rules.pro](stateLayout/consumer-rules.pro)].
 
 ## License
 

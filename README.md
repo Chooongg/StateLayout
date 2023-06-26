@@ -135,7 +135,7 @@ val stateLayout = StateLayout.bind(view)
 
 如果您正在使用R8，则会自动包含压缩和混淆规则。 
 
-ProGuard 用户必须手动添加中的选项[[stateLayout.pro](stateLayout/stateLayout.pro)].
+ProGuard 用户必须手动添加中的选项[[consumer-rules.pro](stateLayout/consumer-rules.pro)].
 
 ## 许可证
 
