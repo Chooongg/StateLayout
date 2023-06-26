@@ -5,19 +5,19 @@ plugins {
 
 android {
     namespace 'com.chooongg.widget.stateLayout.simple'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.chooongg.widget.stateLayout.simple"
-        minSdk 21
-        targetSdk 33
+        minSdk 24
+        targetSdk 34
         versionCode 1
         versionName VERSION_NAME
     }
 
     buildTypes {
         debug {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
@@ -37,9 +37,9 @@ android {
 
 dependencies {
     implementation project(path: ':stateLayout')
-    implementation 'androidx.core:core-ktx:1.10.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.8.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.0-alpha09'
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0-alpha02'
+    implementation 'com.google.android.material:material:1.10.0-alpha04'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0-alpha10'
     implementation 'com.airbnb.android:lottie:6.0.0'
 }
