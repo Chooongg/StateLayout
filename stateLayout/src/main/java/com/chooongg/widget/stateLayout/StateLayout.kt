@@ -11,6 +11,10 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.IdRes
 import androidx.annotation.IntDef
+import androidx.core.view.NestedScrollingChild3
+import androidx.core.view.NestedScrollingChildHelper
+import androidx.core.view.NestedScrollingParent3
+import androidx.core.view.NestedScrollingParentHelper
 import androidx.core.view.children
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
@@ -29,7 +33,11 @@ open class StateLayout @JvmOverloads constructor(
     defStyleRes: Int = 0,
     beginIsContent: Boolean = false,
     enableAnimation: Boolean = StateLayoutManager.isEnableAnimation
-) : FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
+) : FrameLayout(context, attrs, defStyleAttr, defStyleRes), NestedScrollingChild3,
+    NestedScrollingParent3 {
+
+    private val childHelper = NestedScrollingChildHelper(this)
+    private val parentHelper = NestedScrollingParentHelper(this)
 
     /**
      * 当前状态
@@ -85,6 +93,7 @@ open class StateLayout @JvmOverloads constructor(
             showInternal(StateLayoutManager.beginState, null, false)
         }
         a.recycle()
+        childHelper.isNestedScrollingEnabled = true
     }
 
     /**
@@ -166,6 +175,7 @@ open class StateLayout @JvmOverloads constructor(
             LayoutParams.OTHER -> if (isAnimate && canUseAnimate()) {
                 animate.hideAnimate(view) { view.visibility = View.GONE }
             } else view.visibility = View.GONE
+
             LayoutParams.OTHER_IGNORE_CONTENT -> if (currentState == ContentState::class) {
                 if (isAnimate && canUseAnimate()) {
                     if (view.visibility != View.VISIBLE) animate.createAnimate(view)
@@ -383,10 +393,13 @@ open class StateLayout @JvmOverloads constructor(
         when {
             layoutParams.isStateView -> child.visibility =
                 if (currentState == child::class) View.VISIBLE else View.GONE
+
             layoutParams.visibilityStrategy == LayoutParams.CONTENT -> child.visibility =
                 if (currentState == ContentState::class) View.VISIBLE else View.GONE
+
             layoutParams.visibilityStrategy == LayoutParams.OTHER -> child.visibility =
                 if (currentState == ContentState::class) View.GONE else View.VISIBLE
+
             layoutParams.visibilityStrategy == LayoutParams.OTHER_IGNORE_CONTENT -> child.visibility =
                 if (currentState == ContentState::class) View.GONE else View.VISIBLE
         }
@@ -500,5 +513,127 @@ open class StateLayout @JvmOverloads constructor(
             beginIsContent: Boolean = false,
             enableAnimation: Boolean = StateLayoutManager.isEnableAnimation
         ) = bind(fragment.requireView(), beginIsContent, enableAnimation)
+    }
+
+    override fun setNestedScrollingEnabled(enabled: Boolean) {
+        childHelper.isNestedScrollingEnabled = enabled
+    }
+
+    override fun isNestedScrollingEnabled() = childHelper.isNestedScrollingEnabled
+
+    override fun startNestedScroll(axes: Int, type: Int) =
+        childHelper.startNestedScroll(axes, type)
+
+    override fun stopNestedScroll(type: Int) =
+        childHelper.stopNestedScroll(type)
+
+    override fun hasNestedScrollingParent(type: Int) =
+        childHelper.hasNestedScrollingParent(type)
+
+    override fun dispatchNestedScroll(
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        offsetInWindow: IntArray?,
+        type: Int,
+        consumed: IntArray
+    ) = childHelper.dispatchNestedScroll(
+        dxConsumed,
+        dyConsumed,
+        dxUnconsumed,
+        dyUnconsumed,
+        offsetInWindow,
+        type,
+        consumed
+    )
+
+    override fun dispatchNestedScroll(
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        offsetInWindow: IntArray?,
+        type: Int
+    ) = childHelper.dispatchNestedScroll(
+        dxConsumed,
+        dyConsumed,
+        dxUnconsumed,
+        dyUnconsumed,
+        offsetInWindow,
+        type
+    )
+
+    override fun dispatchNestedPreScroll(
+        dx: Int,
+        dy: Int,
+        consumed: IntArray?,
+        offsetInWindow: IntArray?,
+        type: Int
+    ) = childHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, type)
+
+    override fun dispatchNestedFling(
+        velocityX: Float,
+        velocityY: Float,
+        consumed: Boolean
+    ) = childHelper.dispatchNestedFling(velocityX, velocityY, consumed)
+
+    override fun dispatchNestedPreFling(velocityX: Float, velocityY: Float) =
+        childHelper.dispatchNestedPreFling(velocityX, velocityY)
+
+    override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean {
+        childHelper.startNestedScroll(axes, type)
+        return true
+    }
+
+    override fun onNestedScrollAccepted(child: View, target: View, axes: Int, type: Int) {
+        parentHelper.onNestedScrollAccepted(child, target, axes, type)
+    }
+
+    override fun onStopNestedScroll(target: View, type: Int) {
+        parentHelper.onStopNestedScroll(target, type)
+        childHelper.stopNestedScroll(type)
+    }
+
+    override fun onNestedScroll(
+        target: View,
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        type: Int,
+        consumed: IntArray
+    ) {
+        childHelper.dispatchNestedScroll(
+            dxConsumed,
+            dyConsumed,
+            dxUnconsumed,
+            dyUnconsumed,
+            null,
+            type,
+            consumed
+        )
+    }
+
+    override fun onNestedScroll(
+        target: View,
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        type: Int
+    ) {
+        childHelper.dispatchNestedScroll(
+            dxConsumed,
+            dyConsumed,
+            dxUnconsumed,
+            dyUnconsumed,
+            null,
+            type
+        )
+    }
+
+    override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
+        childHelper.dispatchNestedPreScroll(dx, dy, consumed, null, type)
     }
 }
