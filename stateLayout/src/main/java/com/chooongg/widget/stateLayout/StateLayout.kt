@@ -581,13 +581,17 @@ open class StateLayout @JvmOverloads constructor(
     override fun dispatchNestedPreFling(velocityX: Float, velocityY: Float) =
         childHelper.dispatchNestedPreFling(velocityX, velocityY)
 
+    override fun getNestedScrollAxes(): Int {
+        return parentHelper.nestedScrollAxes
+    }
+
     override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean {
-        childHelper.startNestedScroll(axes, type)
         return true
     }
 
     override fun onNestedScrollAccepted(child: View, target: View, axes: Int, type: Int) {
         parentHelper.onNestedScrollAccepted(child, target, axes, type)
+        childHelper.startNestedScroll(axes, type)
     }
 
     override fun onStopNestedScroll(target: View, type: Int) {

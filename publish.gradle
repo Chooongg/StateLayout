@@ -35,7 +35,7 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 //添加这个，否则aar文件不上传
-                artifact(tasks.getByName("bundleReleaseAar"))
+                artifact(tasks.named("bundleReleaseAar"))
                 artifact(androidJavadocsJar)
                 artifact(androidSourcesJar)
                 groupId = GROUP_ID // 唯一标识（通常为模块包名，也可以任意）
@@ -91,20 +91,20 @@ afterEvaluate {
 }
 
 //生成文档注释
-task androidJavadocs(type: Javadoc) {
+tasks.register('androidJavadocs', Javadoc) {
     //设置源码所在的位置
     source = android.sourceSets.main.java.srcDirs
 }
 
 //将文档打包成jar,生成javadoc.jar
-task androidJavadocsJar(type: Jar) {
+tasks.register('androidJavadocsJar', Jar) {
     // 指定文档名称
     archiveClassifier.set('javadoc')
     from androidJavadocs.destinationDir
 }
 
 //将源码打包,生成sources.jar
-task androidSourcesJar(type: Jar) {
+tasks.register('androidSourcesJar', Jar) {
     archiveClassifier.set('sources')
     from android.sourceSets.main.java.srcDirs
 }
