@@ -330,34 +330,34 @@ open class StateLayout @JvmOverloads constructor(
         requestLayout()
     }
 
-    override fun onSaveInstanceState(): Parcelable? {
-        val state = SavedState(super.onSaveInstanceState())
-        state.currentStateClassName = currentState.java.name
-        state.preStateClassName = preState.java.name
-        return state
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    override fun onRestoreInstanceState(state: Parcelable?) {
-        if (state !is SavedState) {
-            super.onRestoreInstanceState(state)
-            return
-        }
-        super.onRestoreInstanceState(state.superState)
-        if (state.currentStateClassName != null) {
-            val temp = onStateChangedListener
-            onStateChangedListener = null
-            showInternal(
-                Class.forName(state.currentStateClassName!!).kotlin as KClass<out AbstractState>,
-                null,
-                false
-            )
-            onStateChangedListener = temp
-        }
-        if (state.preStateClassName != null) {
-            preState = Class.forName(state.preStateClassName!!).kotlin as KClass<out AbstractState>
-        }
-    }
+//    override fun onSaveInstanceState(): Parcelable? {
+//        val state = SavedState(super.onSaveInstanceState())
+//        state.currentStateClassName = currentState.java.name
+//        state.preStateClassName = preState.java.name
+//        return state
+//    }
+//
+//    @Suppress("UNCHECKED_CAST")
+//    override fun onRestoreInstanceState(state: Parcelable?) {
+//        if (state !is SavedState) {
+//            super.onRestoreInstanceState(state)
+//            return
+//        }
+//        super.onRestoreInstanceState(state.superState)
+//        if (state.currentStateClassName != null) {
+//            val temp = onStateChangedListener
+//            onStateChangedListener = null
+//            showInternal(
+//                Class.forName(state.currentStateClassName!!).kotlin as KClass<out AbstractState>,
+//                null,
+//                false
+//            )
+//            onStateChangedListener = temp
+//        }
+//        if (state.preStateClassName != null) {
+//            preState = Class.forName(state.preStateClassName!!).kotlin as KClass<out AbstractState>
+//        }
+//    }
 
     override fun generateDefaultLayoutParams() =
         LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
