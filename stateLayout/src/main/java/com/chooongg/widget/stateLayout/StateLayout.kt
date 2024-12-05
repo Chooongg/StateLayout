@@ -2,10 +2,7 @@ package com.chooongg.widget.stateLayout
 
 import android.app.Activity
 import android.content.Context
-import android.os.Parcel
-import android.os.Parcelable
 import android.util.AttributeSet
-import android.view.AbsSavedState
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -442,38 +439,38 @@ open class StateLayout @JvmOverloads constructor(
         }
     }
 
-    class SavedState : AbsSavedState {
-
-        var currentStateClassName: String? = null
-        var preStateClassName: String? = null
-
-        constructor(superState: Parcelable?) : super(superState)
-        constructor(source: Parcel) : this(source, null)
-        constructor(source: Parcel, loader: ClassLoader?) : super(source, loader) {
-            currentStateClassName = source.readString()
-            preStateClassName = source.readString()
-        }
-
-        override fun writeToParcel(dest: Parcel, flags: Int) {
-            super.writeToParcel(dest, flags)
-            dest.writeString(currentStateClassName)
-            dest.writeString(preStateClassName)
-        }
-
-        companion object CREATOR : Parcelable.ClassLoaderCreator<SavedState> {
-            override fun createFromParcel(source: Parcel, loader: ClassLoader?): SavedState {
-                return SavedState(source, loader)
-            }
-
-            override fun createFromParcel(parcel: Parcel): SavedState {
-                return SavedState(parcel)
-            }
-
-            override fun newArray(size: Int): Array<SavedState?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
+//    class SavedState : AbsSavedState {
+//
+//        var currentStateClassName: String? = null
+//        var preStateClassName: String? = null
+//
+//        constructor(superState: Parcelable?) : super(superState)
+//        constructor(source: Parcel) : this(source, null)
+//        constructor(source: Parcel, loader: ClassLoader?) : super(source, loader) {
+//            currentStateClassName = source.readString()
+//            preStateClassName = source.readString()
+//        }
+//
+//        override fun writeToParcel(dest: Parcel, flags: Int) {
+//            super.writeToParcel(dest, flags)
+//            dest.writeString(currentStateClassName)
+//            dest.writeString(preStateClassName)
+//        }
+//
+//        companion object CREATOR : Parcelable.ClassLoaderCreator<SavedState> {
+//            override fun createFromParcel(source: Parcel, loader: ClassLoader?): SavedState {
+//                return SavedState(source, loader)
+//            }
+//
+//            override fun createFromParcel(parcel: Parcel): SavedState {
+//                return SavedState(parcel)
+//            }
+//
+//            override fun newArray(size: Int): Array<SavedState?> {
+//                return arrayOfNulls(size)
+//            }
+//        }
+//    }
 
     companion object {
         fun bind(
@@ -500,7 +497,7 @@ open class StateLayout @JvmOverloads constructor(
             beginIsContent: Boolean = false,
             enableAnimation: Boolean = StateLayoutManager.isEnableAnimation
         ): StateLayout {
-            val contentView = activity.findViewById(android.R.id.content) as ViewGroup
+            val contentView: ViewGroup = activity.findViewById(android.R.id.content)
             return bind(
                 if (contentView.childCount > 0) contentView.getChildAt(0) else contentView,
                 beginIsContent,
@@ -521,14 +518,11 @@ open class StateLayout @JvmOverloads constructor(
 
     override fun isNestedScrollingEnabled() = childHelper.isNestedScrollingEnabled
 
-    override fun startNestedScroll(axes: Int, type: Int) =
-        childHelper.startNestedScroll(axes, type)
+    override fun startNestedScroll(axes: Int, type: Int) = childHelper.startNestedScroll(axes, type)
 
-    override fun stopNestedScroll(type: Int) =
-        childHelper.stopNestedScroll(type)
+    override fun stopNestedScroll(type: Int) = childHelper.stopNestedScroll(type)
 
-    override fun hasNestedScrollingParent(type: Int) =
-        childHelper.hasNestedScrollingParent(type)
+    override fun hasNestedScrollingParent(type: Int) = childHelper.hasNestedScrollingParent(type)
 
     override fun dispatchNestedScroll(
         dxConsumed: Int,
@@ -539,13 +533,7 @@ open class StateLayout @JvmOverloads constructor(
         type: Int,
         consumed: IntArray
     ) = childHelper.dispatchNestedScroll(
-        dxConsumed,
-        dyConsumed,
-        dxUnconsumed,
-        dyUnconsumed,
-        offsetInWindow,
-        type,
-        consumed
+        dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow, type, consumed
     )
 
     override fun dispatchNestedScroll(
@@ -556,26 +544,15 @@ open class StateLayout @JvmOverloads constructor(
         offsetInWindow: IntArray?,
         type: Int
     ) = childHelper.dispatchNestedScroll(
-        dxConsumed,
-        dyConsumed,
-        dxUnconsumed,
-        dyUnconsumed,
-        offsetInWindow,
-        type
+        dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow, type
     )
 
     override fun dispatchNestedPreScroll(
-        dx: Int,
-        dy: Int,
-        consumed: IntArray?,
-        offsetInWindow: IntArray?,
-        type: Int
+        dx: Int, dy: Int, consumed: IntArray?, offsetInWindow: IntArray?, type: Int
     ) = childHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, type)
 
     override fun dispatchNestedFling(
-        velocityX: Float,
-        velocityY: Float,
-        consumed: Boolean
+        velocityX: Float, velocityY: Float, consumed: Boolean
     ) = childHelper.dispatchNestedFling(velocityX, velocityY, consumed)
 
     override fun dispatchNestedPreFling(velocityX: Float, velocityY: Float) =
@@ -609,13 +586,7 @@ open class StateLayout @JvmOverloads constructor(
         consumed: IntArray
     ) {
         childHelper.dispatchNestedScroll(
-            dxConsumed,
-            dyConsumed,
-            dxUnconsumed,
-            dyUnconsumed,
-            null,
-            type,
-            consumed
+            dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, null, type, consumed
         )
     }
 
@@ -628,12 +599,7 @@ open class StateLayout @JvmOverloads constructor(
         type: Int
     ) {
         childHelper.dispatchNestedScroll(
-            dxConsumed,
-            dyConsumed,
-            dxUnconsumed,
-            dyUnconsumed,
-            null,
-            type
+            dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, null, type
         )
     }
 
