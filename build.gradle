@@ -6,5 +6,5 @@ plugins {
 }
 
 ext{
-    VERSION_NAME = '1.0.4'
+    VERSION_NAME = '1.0.5'
 }
